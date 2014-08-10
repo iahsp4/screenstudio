@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Properties;
 import java.util.TreeMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -47,7 +49,7 @@ public class Encoder {
     private final TreeMap<String, Command> commands = new TreeMap<String, Command>();
     private final ArrayList<Layout> layouts = new ArrayList<Layout>();
     private ArrayList<String> presets = new ArrayList<String>();
-    
+
     private final String serviceName;
     private final String target;
 
@@ -66,6 +68,7 @@ public class Encoder {
         command = command.replaceAll("@OUTSINK", f.getAbsolutePath());
         return command;
     }
+
     public static String parse(Screen s, String url) throws IOException, InterruptedException {
         String command = parseGeneric(s);
         command = command.replaceAll("@OUTSINK", url);
@@ -85,7 +88,7 @@ public class Encoder {
         if (s.getOverlay() != null) {
             command = command.replaceAll("@BANNERSRC", s.getOverlay().getImage().getAbsolutePath());
         }
-        if (s.getProfile().getVideo().getFps() == null){
+        if (s.getProfile().getVideo().getFps() == null) {
             command = command.replaceAll("@OUTFPS", s.getFps() + "");
         } else {
             command = command.replaceAll("@OUTFPS", s.getProfile().getVideo().getFps());
@@ -97,18 +100,17 @@ public class Encoder {
         command = command.replaceAll("@DESKTOPY", ((int) s.getSize().getY()) + "");
 
         //using virtual device...
-        if (s.getMicrophone() != null && s.getMonitor() != null){
+        if (s.getMicrophone() != null && s.getMonitor() != null) {
             String virtual = Microphone.getVirtualAudio(s.getMicrophone(), s.getMonitor());
             System.out.println("Using Virtual Input Device " + virtual);
             command = command.replaceAll("@PULSEDEV", virtual);
-        } else if (s.getMicrophone()!= null){
+        } else if (s.getMicrophone() != null) {
             command = command.replaceAll("@PULSEDEV", s.getMicrophone().getDevice());
-        } else if (s.getMonitor()!=null){
+        } else if (s.getMonitor() != null) {
             command = command.replaceAll("@PULSEDEV", s.getMonitor().getDevice());
         } else {
             command = command.replaceAll("@PULSEDEV", "default");
         }
-        
 
         int outputWidth = (int) s.getSize().getWidth();
         int outputHeight = (int) s.getSize().getHeight();
@@ -137,8 +139,8 @@ public class Encoder {
         if (outputHeight % 2 != 0) {
             outputHeight -= 1;
         }
-        if (s.getProfile().getGroup().length() > 0){
-            command = command.replaceAll("@GROUP", (Integer.parseInt(s.getProfile().getGroup())*s.getFps()) + "");
+        if (s.getProfile().getGroup().length() > 0) {
+            command = command.replaceAll("@GROUP", (Integer.parseInt(s.getProfile().getGroup()) * s.getFps()) + "");
         }
         command = command.replaceAll("@PRESET", s.getProfile().getVideo().getPreset());
         command = command.replaceAll("@OUTW", outputWidth + "");
@@ -176,14 +178,14 @@ public class Encoder {
                         }
                         cNode = cNode.getNextSibling();
                     }
-                }else if (node.getNodeName().equals("presets")) {
+                } else if (node.getNodeName().equals("presets")) {
                     Node cNode = node.getFirstChild();
                     while (cNode != null) {
                         if (cNode.getNodeType() == Node.ELEMENT_NODE) {
                             if (cNode.getNodeName().equals("preset")) {
                                 presets.add(cNode.getTextContent());
-                                
-                            } 
+
+                            }
                         }
                         cNode = cNode.getNextSibling();
                     }
@@ -209,7 +211,7 @@ public class Encoder {
         if (f != null) {
             in = f.toURI().toURL().openStream();
         } else {
-            in = Encoder.class.getResourceAsStream("/org/screenstudio/services/Encoders.xml");
+            in = Encoder.class.getResourceAsStream(getXMLResourceName());
         }
         Document doc = builder.parse(in);
         NodeList setting = doc.getElementsByTagName("services");
@@ -255,9 +257,10 @@ public class Encoder {
         return servers.toArray(new Server[servers.size()]);
     }
 
-    public ArrayList<String> getPresets(){
+    public ArrayList<String> getPresets() {
         return presets;
     }
+
     /**
      * @return the serviceName
      */
@@ -290,4 +293,33 @@ public class Encoder {
         return subList.toArray(new Layout[subList.size()]);
     }
 
+    public static String getXMLResourceName() {
+        //Using default configuration.
+        String retValue = "/org/screenstudio/services/distros/default.xml";
+        try {
+            InputStream in = new File("/etc/issue").toURI().toURL().openStream();
+            byte[] buffer = new byte[in.available()];
+            in.read(buffer);
+            in.close();
+            String currentDistro = new String(buffer).replaceAll(" ", "_").toUpperCase();
+            Properties mapping = new Properties();
+            in = Encoder.class.getResourceAsStream("/org/screenstudio/services/distros/Mapping.properties");
+            mapping.load(in);
+            in.close();
+            Enumeration list = mapping.propertyNames();
+            while (list.hasMoreElements()){
+                String key = list.nextElement().toString();
+                if (currentDistro.startsWith(key.toUpperCase())){
+                    //Loading specific xml configuration for current distro
+                    retValue = "/org/screenstudio/services/distros/" +mapping.getProperty(key);
+                    System.out.println("Using " + retValue + " for " + currentDistro);
+                    break;
+                }
+            }
+            
+        } catch (Exception ex) {
+            System.err.println("ERROR loading distro name: " + ex.getMessage());
+        }
+        return retValue;
+    }
 }
