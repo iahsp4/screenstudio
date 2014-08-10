@@ -1752,7 +1752,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private void mnuExportXMLToFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExportXMLToFileActionPerformed
 
         try {
-            InputStream in = ScreenStudio.class.getResourceAsStream("/org/screenstudio/services/Encoders.xml");
+            InputStream in = ScreenStudio.class.getResourceAsStream(Encoder.getXMLResourceName());
             File destFile = new File(videoFolder, "DefaultScreenStudio.xml");
             FileOutputStream out = new FileOutputStream(destFile);
             byte[] buffer = new byte[in.available()];
