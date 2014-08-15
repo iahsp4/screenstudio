@@ -30,8 +30,8 @@ import java.util.logging.Logger;
  */
 public class Microphone {
 
-    private String device = "";
-    private String description = "";
+    private String device = null;
+    private String description = "None";
 
     @Override
     public String toString() {
@@ -77,7 +77,7 @@ public class Microphone {
         InputStream in = p.getInputStream();
         InputStreamReader isr = new InputStreamReader(in);
         BufferedReader reader = new BufferedReader(isr);
-
+        String device = "default";
         String line = reader.readLine();
         while (line != null) {
             if (line.trim().toUpperCase().matches("^.* \\#\\d{1,4}$")) {
@@ -101,15 +101,20 @@ public class Microphone {
             execPACTL("pactl unload-module " + loadedModules.get(i));
             pause(100);
         }
-        if (source1 != null && source2 != null) {
+        if (source1 != null && source2 != null && source1.getDevice() != null && source2.getDevice() != null) {
             execPACTL("pactl load-module module-null-sink sink_name=ScreenStudio sink_properties=device.description=\"ScreenStudio\"");
             pause(100);
-            execPACTL("pactl load-module module-loopback sink=ScreenStudio source=" + source1.device);
+            execPACTL("pactl load-module module-loopback sink=ScreenStudio source=" + source1.getDevice());
             pause(100);
-            execPACTL("pactl load-module module-loopback sink=ScreenStudio source=" + source2.device);
+            execPACTL("pactl load-module module-loopback sink=ScreenStudio source=" + source2.getDevice());
             pause(100);
+            device = "ScreenStudio.monitor";
+        } else if (source1 != null && source1.getDevice() != null){
+            device = source1.getDevice();
+        } else if (source2 != null && source2.getDevice() != null){
+            device = source2.getDevice();
         }
-        return "ScreenStudio.monitor";
+        return device;
     }
 
     private static void pause(long ms){

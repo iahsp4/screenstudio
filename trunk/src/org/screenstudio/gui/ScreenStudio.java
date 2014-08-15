@@ -97,7 +97,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
      */
     public ScreenStudio() {
         initComponents();
-        this.setTitle("ScreenStudio 1.2.6");
+        this.setTitle("ScreenStudio 1.2.7");
 
         updateControls(null);
         loadPreferences(false);
@@ -113,8 +113,18 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         try {
             java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userRoot().node(this.getName());
             prefs.put("name", txtStreamName.getText());
-            prefs.put("audiosource", ((Microphone) cboAudioSource.getSelectedItem()).getDevice());
-            prefs.put("audiomonitor", ((Microphone) cboAudioMonitors.getSelectedItem()).getDevice());
+
+            if (((Microphone) cboAudioMonitors.getSelectedItem()).getDevice() != null) {
+                prefs.put("audiomonitor", ((Microphone) cboAudioMonitors.getSelectedItem()).getDevice());
+            } else {
+                prefs.put("audiomonitor", "");
+            }
+            if (((Microphone) cboAudioSource.getSelectedItem()).getDevice() != null) {
+                prefs.put("audiosource", ((Microphone) cboAudioSource.getSelectedItem()).getDevice());
+            } else {
+                prefs.put("audiosource", "");
+            }
+
             if (((Webcam) cbowebcamSource.getSelectedItem()).getDevice() != null) {
                 prefs.put("webcamsource", ((Webcam) cbowebcamSource.getSelectedItem()).getDevice().getAbsolutePath());
             } else {
@@ -166,7 +176,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             @Override
             public void run() {
                 try {
-                    if (keyShortcuts == null){
+                    if (keyShortcuts == null) {
                         keyShortcuts = Provider.getCurrentProvider(false);
                     }
                     keyShortcuts.reset();
@@ -182,18 +192,19 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         }).start();
 
     }
-    private void stopShortcuts(){
+
+    private void stopShortcuts() {
         final ScreenStudio instance = this;
         new Thread(new Runnable() {
 
             @Override
             public void run() {
                 try {
-                    if (keyShortcuts != null){
+                    if (keyShortcuts != null) {
                         keyShortcuts.reset();
                         keyShortcuts.stop();
                     }
-                    
+
                 } catch (Exception ex) {
                     keyShortcuts = null;
                     MsgLogs logs = new MsgLogs("Setting shortcuts", ex, instance, true);
@@ -222,7 +233,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             String adev = prefs.get("audiosource", "ScreenStudio");
             for (int i = 0; i < cboAudioSource.getItemCount(); i++) {
                 Microphone s = (Microphone) cboAudioSource.getItemAt(i);
-                if (s.getDevice().equals(adev)) {
+                if (adev.equals(s.getDevice())) {
                     cboAudioSource.setSelectedIndex(i);
                     break;
                 }
@@ -230,7 +241,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             adev = prefs.get("audiomonitor", "ScreenStudio");
             for (int i = 0; i < cboAudioMonitors.getItemCount(); i++) {
                 Microphone s = (Microphone) cboAudioMonitors.getItemAt(i);
-                if (s.getDevice().equals(adev)) {
+                if (adev.equals(s.getDevice())) {
                     cboAudioMonitors.setSelectedIndex(i);
                     break;
                 }
@@ -324,6 +335,9 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             Microphone[] audios = Microphone.getSources();
             cboAudioSource.setModel(new DefaultComboBoxModel());
             cboAudioMonitors.setModel(new DefaultComboBoxModel());
+
+            cboAudioSource.addItem(new Microphone());
+            cboAudioMonitors.addItem(new Microphone());
             for (Microphone m : audios) {
                 if (m.getDevice().endsWith(".monitor")) {
                     cboAudioMonitors.addItem(m);
@@ -411,6 +425,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                         this.setIconImage(iconRunning);
                         if (ticon != null) {
                             ticon.setImage(iconRunning);
+                            ticon.setToolTip("Recording Time: 0 minutes...");
                         }
                         started = System.currentTimeMillis();
                     }
@@ -440,6 +455,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                             g.drawString(time, x, trayIcon.getHeight() - 8);
                             ticon.setImage(trayIcon);
                             g.dispose();
+                            ticon.setToolTip("Recording Time: " + delta + " minutes...");
                         }
                     }
                     txtStatus.setText(line);
