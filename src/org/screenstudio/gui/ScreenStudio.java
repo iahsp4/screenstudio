@@ -98,61 +98,54 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     public ScreenStudio() {
         initComponents();
         this.setTitle("ScreenStudio 1.2.6");
-        
-        try {
-            keyShortcuts = Provider.getCurrentProvider(true);
-        } catch (Exception ex) {
-            keyShortcuts = null;
-            MsgLogs logs = new MsgLogs("Setting shortcuts", ex, this, true);
-            logs.setLocationByPlatform(true);
-            logs.setVisible(true);
-        }
+
         updateControls(null);
         loadPreferences(false);
+        initializeShortCuts();
         updateSourceOrigin();
         remote = new WebRemote(this);
-        if (!org.screenstudio.services.sources.SystemCheck.isSystemReady(false)){
+        if (!org.screenstudio.services.sources.SystemCheck.isSystemReady(false)) {
             txtStatus.setText("Some dependencies maybe missing... Have a look at Options/System Check!");
         }
     }
 
     private void savePreferences() {
         try {
-        java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userRoot().node(this.getName());
-        prefs.put("name", txtStreamName.getText());
-        prefs.put("audiosource", ((Microphone) cboAudioSource.getSelectedItem()).getDevice());
-        prefs.put("audiomonitor", ((Microphone) cboAudioMonitors.getSelectedItem()).getDevice());
-        if (((Webcam) cbowebcamSource.getSelectedItem()).getDevice() != null) {
-            prefs.put("webcamsource", ((Webcam) cbowebcamSource.getSelectedItem()).getDevice().getAbsolutePath());
-        } else {
-            prefs.remove("webcamsource");
-        }
-        if (loadedConfigurationFile != null) {
-            prefs.put("loadedconfigfile", loadedConfigurationFile.getAbsolutePath());
-        }
-        prefs.putInt("webcamcapturewidth", (Integer) spinWebcamCaptureWidth.getValue());
-        prefs.putInt("webcamcaptureheight", (Integer) spinWebcamCaptureHeight.getValue());
-        prefs.putFloat("webcamoffset", (Float) spinWebcamOffset.getValue());
-        prefs.putInt("fps", (Integer) spinFPS.getValue());
-        prefs.put("screensource", cboScreen.getSelectedItem().toString());
-        prefs.put("overlayhtml", txtOverlayHTML.getText());
-        prefs.putInt("webcamlayout", cboWebcamLayout.getSelectedIndex());
-        prefs.putInt("overlaylayout", cboOverlayLayout.getSelectedIndex());
-        prefs.putInt("recordservice", cboRecordServices.getSelectedIndex());
-        prefs.putInt("recordprofile", cboRecordProfile.getSelectedIndex());
-        prefs.putInt("rtmpservice", cboRTMPServices.getSelectedIndex());
-        prefs.putInt("rtmpserver", cboRTMPServer.getSelectedIndex());
-        prefs.putInt("rtmpprofile", cboRTMPProfiles.getSelectedIndex());
-        prefs.put("videofolder", videoFolder.getAbsolutePath());
-        prefs.put("shortcutrecording", shortcutRecording);
-        prefs.put("shortcutstreaming", shortcutStreaming);
+            java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userRoot().node(this.getName());
+            prefs.put("name", txtStreamName.getText());
+            prefs.put("audiosource", ((Microphone) cboAudioSource.getSelectedItem()).getDevice());
+            prefs.put("audiomonitor", ((Microphone) cboAudioMonitors.getSelectedItem()).getDevice());
+            if (((Webcam) cbowebcamSource.getSelectedItem()).getDevice() != null) {
+                prefs.put("webcamsource", ((Webcam) cbowebcamSource.getSelectedItem()).getDevice().getAbsolutePath());
+            } else {
+                prefs.remove("webcamsource");
+            }
+            if (loadedConfigurationFile != null) {
+                prefs.put("loadedconfigfile", loadedConfigurationFile.getAbsolutePath());
+            }
+            prefs.putInt("webcamcapturewidth", (Integer) spinWebcamCaptureWidth.getValue());
+            prefs.putInt("webcamcaptureheight", (Integer) spinWebcamCaptureHeight.getValue());
+            prefs.putFloat("webcamoffset", (Float) spinWebcamOffset.getValue());
+            prefs.putInt("fps", (Integer) spinFPS.getValue());
+            prefs.put("screensource", cboScreen.getSelectedItem().toString());
+            prefs.put("overlayhtml", txtOverlayHTML.getText());
+            prefs.putInt("webcamlayout", cboWebcamLayout.getSelectedIndex());
+            prefs.putInt("overlaylayout", cboOverlayLayout.getSelectedIndex());
+            prefs.putInt("recordservice", cboRecordServices.getSelectedIndex());
+            prefs.putInt("recordprofile", cboRecordProfile.getSelectedIndex());
+            prefs.putInt("rtmpservice", cboRTMPServices.getSelectedIndex());
+            prefs.putInt("rtmpserver", cboRTMPServer.getSelectedIndex());
+            prefs.putInt("rtmpprofile", cboRTMPProfiles.getSelectedIndex());
+            prefs.put("videofolder", videoFolder.getAbsolutePath());
+            prefs.put("shortcutrecording", shortcutRecording);
+            prefs.put("shortcutstreaming", shortcutStreaming);
 
-        if (cboStreamPresets.getSelectedItem() != null) {
-            prefs.put("rtmppreset", cboStreamPresets.getSelectedItem().toString());
-        }
-        if (cboRecordPresets.getSelectedItem() != null) {
-            prefs.put("recordpreset", cboRecordPresets.getSelectedItem().toString());
-        }
+            if (cboStreamPresets.getSelectedItem() != null) {
+                prefs.put("rtmppreset", cboStreamPresets.getSelectedItem().toString());
+            }
+            if (cboRecordPresets.getSelectedItem() != null) {
+                prefs.put("recordpreset", cboRecordPresets.getSelectedItem().toString());
+            }
             prefs.flush();
         } catch (Exception ex) {
             MsgLogs logs = new MsgLogs("Saving preferences...", ex, this, true);
@@ -164,6 +157,51 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private void updateSourceOrigin() {
         lblMadeBY.setText("By " + Encoder.Author);
         lblMadeFor.setText(Encoder.OS + " (" + Encoder.Backend + ") v" + Encoder.Version);
+    }
+
+    private void initializeShortCuts() {
+        final ScreenStudio instance = this;
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    if (keyShortcuts == null){
+                        keyShortcuts = Provider.getCurrentProvider(false);
+                    }
+                    keyShortcuts.reset();
+                    keyShortcuts.register(KeyStroke.getKeyStroke(shortcutRecording), instance);
+                    keyShortcuts.register(KeyStroke.getKeyStroke(shortcutStreaming), instance);
+                } catch (Exception ex) {
+                    keyShortcuts = null;
+                    MsgLogs logs = new MsgLogs("Setting shortcuts", ex, instance, true);
+                    logs.setLocationByPlatform(true);
+                    logs.setVisible(true);
+                }
+            }
+        }).start();
+
+    }
+    private void stopShortcuts(){
+        final ScreenStudio instance = this;
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    if (keyShortcuts != null){
+                        keyShortcuts.reset();
+                        keyShortcuts.stop();
+                    }
+                    
+                } catch (Exception ex) {
+                    keyShortcuts = null;
+                    MsgLogs logs = new MsgLogs("Setting shortcuts", ex, instance, true);
+                    logs.setLocationByPlatform(true);
+                    logs.setVisible(true);
+                }
+            }
+        }).start();
     }
 
     private void loadPreferences(boolean reloading) {
@@ -241,11 +279,6 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
 
             shortcutRecording = prefs.get("shortcutrecording", shortcutRecording);
             shortcutStreaming = prefs.get("shortcutstreaming", shortcutStreaming);
-            if (keyShortcuts != null) {
-                keyShortcuts.reset();
-                keyShortcuts.register(KeyStroke.getKeyStroke(shortcutRecording), this);
-                keyShortcuts.register(KeyStroke.getKeyStroke(shortcutStreaming), this);
-            }
 
             chkOptionRecordControl.setSelected(shortcutRecording.contains("control"));
             chkOptionRecordAlt.setSelected(shortcutRecording.contains("alt"));
@@ -1427,8 +1460,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             }
         } else {
             if (keyShortcuts != null) {
-                keyShortcuts.reset();
-                keyShortcuts.stop();
+                stopShortcuts();
             }
         }
     }//GEN-LAST:event_formWindowClosing
@@ -1625,10 +1657,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         remote.stop();
         savePreferences();
         removeSystemTrayIcon();
-        if (keyShortcuts != null) {
-            keyShortcuts.reset();
-            keyShortcuts.stop();
-        }
+        stopShortcuts();
         System.exit(0);
     }//GEN-LAST:event_mnuBarExitActionPerformed
 
@@ -1809,9 +1838,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         }
         shortcutStreaming += txtOptionStreamKey.getText();
         if (keyShortcuts != null) {
-            keyShortcuts.reset();
-            keyShortcuts.register(KeyStroke.getKeyStroke(shortcutRecording), this);
-            keyShortcuts.register(KeyStroke.getKeyStroke(shortcutStreaming), this);
+            initializeShortCuts();
         }
     }//GEN-LAST:event_btnOptionsApplyActionPerformed
 
@@ -1842,7 +1869,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     }//GEN-LAST:event_mnuCaptureWindowActionPerformed
 
     private void mnuSystemCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSystemCheckActionPerformed
-        if (!org.screenstudio.services.sources.SystemCheck.isSystemReady(true)){
+        if (!org.screenstudio.services.sources.SystemCheck.isSystemReady(true)) {
             txtStatus.setText("Some dependencies maybe missing...");
         }
     }//GEN-LAST:event_mnuSystemCheckActionPerformed
