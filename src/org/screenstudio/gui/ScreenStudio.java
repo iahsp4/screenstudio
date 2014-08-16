@@ -2079,18 +2079,28 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
 
     @Override
     public void onHotKey(HotKey hotkey) {
-        switch (hotkey.keyStroke.getKeyCode()) {
-            case KeyEvent.VK_S:
-                if (tglStreamToServer.isEnabled()) {
-                    tglStreamToServer.doClick();
-                }
-                break;
-            case KeyEvent.VK_R:
-                if (tglRecordVideo.isEnabled()) {
+        String shortcut = "";
+        
+        if (hotkey.toString().contains("ctrl")){
+            shortcut += " control";
+        }
+        if (hotkey.toString().contains("alt")){
+            shortcut += " alt";
+        }
+        if (hotkey.toString().contains("shift")){
+            shortcut += " shift";
+        }
+        shortcut += " " + KeyEvent.getKeyText(hotkey.keyStroke.getKeyCode());
+        
+        shortcut = shortcut.trim().toUpperCase().replaceAll("  ", " ");
+        if (shortcut.equals(shortcutRecording.toUpperCase())){
+            if (tglRecordVideo.isEnabled()) {
                     tglRecordVideo.doClick();
                 }
-                break;
+        } else if (shortcut.equals(shortcutStreaming.toUpperCase())){
+         if (tglStreamToServer.isEnabled()) {
+                    tglStreamToServer.doClick();
+                }   
         }
-
     }
 }
