@@ -96,7 +96,6 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private Provider keyShortcuts = null;
     private String shortcutRecording = "control shift R";
     private String shortcutStreaming = "control shift S";
-
     /**
      * Creates new form ScreenStudio
      */
@@ -357,8 +356,15 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                 icon = javax.imageio.ImageIO.read(this.getClass().getResource("icon.png"));
                 iconRunning = javax.imageio.ImageIO.read(this.getClass().getResource("iconRunning.png"));
                 iconStarting = javax.imageio.ImageIO.read(this.getClass().getResource("iconStarting.png"));
-                this.setIconImage(icon);
-
+                BufferedImage taskIcon = javax.imageio.ImageIO.read(this.getClass().getResource("logo.png"));
+                this.setIconImage(taskIcon);
+                this.getIconImages().add(taskIcon.getScaledInstance(256, 256, Image.SCALE_SMOOTH));
+                this.getIconImages().add(taskIcon.getScaledInstance(128, 128, Image.SCALE_SMOOTH));
+                this.getIconImages().add(taskIcon.getScaledInstance(64, 64, Image.SCALE_SMOOTH));
+                this.getIconImages().add(taskIcon.getScaledInstance(48, 48, Image.SCALE_SMOOTH));
+                this.getIconImages().add(taskIcon.getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+                this.getIconImages().add(taskIcon.getScaledInstance(24, 24, Image.SCALE_SMOOTH));
+                this.getIconImages().add(taskIcon.getScaledInstance(16, 16, Image.SCALE_SMOOTH));
             } catch (IOException ex) {
                 Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
             }
