@@ -22,6 +22,7 @@ import java.awt.AWTException;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
@@ -76,7 +77,11 @@ import org.screenstudio.services.sources.Webcam;
 public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKeyListener {
 
     private Process streamProcess = null;
-    private TrayIcon ticon = null;
+    private TrayIcon trayIcon = null;
+    private Dimension trayIconSize = null;
+    private Image trayIconDefault = null;
+    private Image trayIconStarting = null;
+    private Image trayIconRunning = null;
     private boolean actionFromTray = false;
     private Image icon = null;
     private Image iconRunning = null;
@@ -391,13 +396,13 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         cboRTMPProfiles.setEnabled(!isStreaming);
         if (isStreaming) {
             this.setIconImage(iconStarting);
-            if (ticon != null) {
-                ticon.setImage(iconStarting);
+            if (trayIcon != null) {
+                trayIcon.setImage(trayIconStarting);
             }
         } else {
             this.setIconImage(icon);
-            if (ticon != null) {
-                ticon.setImage(icon);
+            if (trayIcon != null) {
+                trayIcon.setImage(trayIconDefault);
             }
         }
     }
@@ -423,18 +428,18 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                     if (isStarting && line.startsWith("frame")) {
                         isStarting = false;
                         this.setIconImage(iconRunning);
-                        if (ticon != null) {
-                            ticon.setImage(iconRunning);
-                            ticon.setToolTip("Recording Time: 0 minutes...");
+                        if (trayIcon != null) {
+                            trayIcon.setImage(trayIconRunning);
+                            trayIcon.setToolTip("Recording Time: 0 minutes...");
                         }
                         started = System.currentTimeMillis();
                     }
                     if (!isStarting) {
                         delta = (System.currentTimeMillis() - started) / 1000 / 60;
-                        if (ticon != null && delta != lastTime) {
+                        if (trayIcon != null && delta != lastTime) {
                             lastTime = delta;
-                            BufferedImage trayIcon = new BufferedImage(28, 32, BufferedImage.TRANSLUCENT);
-                            Graphics2D g = trayIcon.createGraphics();
+                            BufferedImage img = new BufferedImage((int)trayIconSize.getWidth(), (int)trayIconSize.getHeight(), BufferedImage.TRANSLUCENT);
+                            Graphics2D g = img.createGraphics();
                             g.setBackground(Color.GREEN);
                             g.setRenderingHint(
                                     RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -442,20 +447,21 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                             g.setRenderingHint(
                                     RenderingHints.KEY_RENDERING,
                                     RenderingHints.VALUE_RENDER_QUALITY);
-                            g.clearRect(0, 0, trayIcon.getWidth(), trayIcon.getHeight());
+                            g.clearRect(0, 0, img.getWidth(), img.getHeight());
                             g.setColor(Color.BLACK);
                             g.setStroke(new BasicStroke(2));
-                            g.drawRect(1, 1, trayIcon.getWidth() - 2, trayIcon.getHeight() - 2);
-                            g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, trayIcon.getWidth() / 3));
-                            String time = delta + "";
-                            int x = (trayIcon.getWidth() / 2) - (g.getFontMetrics(g.getFont()).stringWidth(time) / 2);
-                            g.drawString(time, x, (trayIcon.getHeight() / 3) + 4);
+                            g.drawRect(1, 1, img.getWidth() - 2, img.getHeight() - 2);
+                            g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, img.getHeight() / 3));
+                            String time = (delta) + "";
+                            int x = (img.getWidth() / 2) - (g.getFontMetrics(g.getFont()).stringWidth(time) / 2);
+                            g.drawString(time, x, (img.getHeight() / 2));
                             time = "MIN";
-                            x = (trayIcon.getWidth() / 2) - (g.getFontMetrics(g.getFont()).stringWidth(time) / 2);
-                            g.drawString(time, x, trayIcon.getHeight() - 8);
-                            ticon.setImage(trayIcon);
+                            x = (img.getWidth() / 2) - (g.getFontMetrics(g.getFont()).stringWidth(time) / 2);
+                            g.drawString(time, x, img.getHeight() - 4);
                             g.dispose();
-                            ticon.setToolTip("Recording Time: " + delta + " minutes...");
+                            this.trayIcon.setImage(img);
+                            
+                            this.trayIcon.setToolTip("Recording Time: " + delta + " minutes...");
                         }
                     }
                     txtStatus.setText(line);
@@ -484,17 +490,21 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     }
 
     private void displaySystemTrayIcon() throws IOException {
-        if (SystemTray.isSupported() && ticon == null) {
+        if (SystemTray.isSupported() && trayIcon == null) {
             SystemTray tray = SystemTray.getSystemTray();
             try {
-                ticon = new TrayIcon(icon, this.getTitle(), trayMenu);
-                ticon.setImageAutoSize(true);
-                tray.add(ticon);
+                trayIconSize = tray.getTrayIconSize();
+                trayIconDefault = icon.getScaledInstance(-1, (int)trayIconSize.getHeight(), Image.SCALE_SMOOTH);
+                trayIconStarting = iconStarting.getScaledInstance(-1, (int)trayIconSize.getHeight(), Image.SCALE_SMOOTH);
+                trayIconRunning = iconRunning.getScaledInstance(-1, (int)trayIconSize.getHeight(), Image.SCALE_SMOOTH);
+                trayIcon = new TrayIcon(trayIconDefault, this.getTitle(), trayMenu);
+                trayIcon.setImageAutoSize(false);
+                tray.add(trayIcon);
             } catch (AWTException ex) {
                 Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        if (ticon == null) {
+        if (trayIcon == null) {
             this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         }
     }
@@ -502,7 +512,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private void removeSystemTrayIcon() {
         if (SystemTray.isSupported()) {
             SystemTray tray = SystemTray.getSystemTray();
-            tray.remove(ticon);
+            tray.remove(trayIcon);
         }
     }
 
@@ -583,8 +593,8 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         System.out.println(message);
         txtStatus.setText(message);
         updateControls(false);
-        if (ticon != null) {
-            ticon.setToolTip("ScreenStudio: " + message);
+        if (trayIcon != null) {
+            trayIcon.setToolTip("ScreenStudio: " + message);
         }
         //Cleanup virtual audio
         try {
