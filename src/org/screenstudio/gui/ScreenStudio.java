@@ -101,7 +101,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
      */
     public ScreenStudio() {
         initComponents();
-        this.setTitle("ScreenStudio 1.2.7");
+        this.setTitle("ScreenStudio 1.2.8");
 
         updateControls(null);
         loadPreferences(false);
