@@ -96,13 +96,31 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private Provider keyShortcuts = null;
     private String shortcutRecording = "control shift R";
     private String shortcutStreaming = "control shift S";
+
     /**
      * Creates new form ScreenStudio
      */
     public ScreenStudio() {
         initComponents();
         this.setTitle("ScreenStudio 1.2.8");
-
+        
+        try {
+            icon = javax.imageio.ImageIO.read(this.getClass().getResource("icon.png"));
+            iconRunning = javax.imageio.ImageIO.read(this.getClass().getResource("iconRunning.png"));
+            iconStarting = javax.imageio.ImageIO.read(this.getClass().getResource("iconStarting.png"));
+            BufferedImage taskIcon = javax.imageio.ImageIO.read(this.getClass().getResource("logo.png"));
+            this.setIconImage(taskIcon);
+            this.getIconImages().add(taskIcon.getScaledInstance(256, 256, Image.SCALE_SMOOTH));
+            this.getIconImages().add(taskIcon.getScaledInstance(128, 128, Image.SCALE_SMOOTH));
+            this.getIconImages().add(taskIcon.getScaledInstance(64, 64, Image.SCALE_SMOOTH));
+            this.getIconImages().add(taskIcon.getScaledInstance(48, 48, Image.SCALE_SMOOTH));
+            this.getIconImages().add(taskIcon.getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+            this.getIconImages().add(taskIcon.getScaledInstance(24, 24, Image.SCALE_SMOOTH));
+            this.getIconImages().add(taskIcon.getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+            displaySystemTrayIcon();
+        } catch (IOException ex) {
+            Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
         updateControls(null);
         loadPreferences(false);
         initializeShortCuts();
@@ -352,24 +370,6 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             cbowebcamSource.setModel(new DefaultComboBoxModel(Webcam.getSources()));
             cboScreen.setModel(new DefaultComboBoxModel(Screen.getSources()));
 
-            try {
-                icon = javax.imageio.ImageIO.read(this.getClass().getResource("icon.png"));
-                iconRunning = javax.imageio.ImageIO.read(this.getClass().getResource("iconRunning.png"));
-                iconStarting = javax.imageio.ImageIO.read(this.getClass().getResource("iconStarting.png"));
-                BufferedImage taskIcon = javax.imageio.ImageIO.read(this.getClass().getResource("logo.png"));
-                this.setIconImage(taskIcon);
-                this.getIconImages().add(taskIcon.getScaledInstance(256, 256, Image.SCALE_SMOOTH));
-                this.getIconImages().add(taskIcon.getScaledInstance(128, 128, Image.SCALE_SMOOTH));
-                this.getIconImages().add(taskIcon.getScaledInstance(64, 64, Image.SCALE_SMOOTH));
-                this.getIconImages().add(taskIcon.getScaledInstance(48, 48, Image.SCALE_SMOOTH));
-                this.getIconImages().add(taskIcon.getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-                this.getIconImages().add(taskIcon.getScaledInstance(24, 24, Image.SCALE_SMOOTH));
-                this.getIconImages().add(taskIcon.getScaledInstance(16, 16, Image.SCALE_SMOOTH));
-            } catch (IOException ex) {
-                Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            displaySystemTrayIcon();
-
         } catch (Exception ex) {
             MsgLogs logs = new MsgLogs("Updating controls...", ex, this, true);
             logs.setLocationByPlatform(true);
@@ -444,7 +444,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                         delta = (System.currentTimeMillis() - started) / 1000 / 60;
                         if (trayIcon != null && delta != lastTime) {
                             lastTime = delta;
-                            BufferedImage img = new BufferedImage((int)trayIconSize.getWidth(), (int)trayIconSize.getHeight(), BufferedImage.TRANSLUCENT);
+                            BufferedImage img = new BufferedImage((int) trayIconSize.getWidth(), (int) trayIconSize.getHeight(), BufferedImage.TRANSLUCENT);
                             Graphics2D g = img.createGraphics();
                             g.setBackground(Color.GREEN);
                             g.setRenderingHint(
@@ -466,7 +466,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                             g.drawString(time, x, img.getHeight() - 4);
                             g.dispose();
                             this.trayIcon.setImage(img);
-                            
+
                             this.trayIcon.setToolTip("Recording Time: " + delta + " minutes...");
                         }
                     }
@@ -500,9 +500,9 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             SystemTray tray = SystemTray.getSystemTray();
             try {
                 trayIconSize = tray.getTrayIconSize();
-                trayIconDefault = icon.getScaledInstance(-1, (int)trayIconSize.getHeight(), Image.SCALE_SMOOTH);
-                trayIconStarting = iconStarting.getScaledInstance(-1, (int)trayIconSize.getHeight(), Image.SCALE_SMOOTH);
-                trayIconRunning = iconRunning.getScaledInstance(-1, (int)trayIconSize.getHeight(), Image.SCALE_SMOOTH);
+                trayIconDefault = icon.getScaledInstance(-1, (int) trayIconSize.getHeight(), Image.SCALE_SMOOTH);
+                trayIconStarting = iconStarting.getScaledInstance(-1, (int) trayIconSize.getHeight(), Image.SCALE_SMOOTH);
+                trayIconRunning = iconRunning.getScaledInstance(-1, (int) trayIconSize.getHeight(), Image.SCALE_SMOOTH);
                 trayIcon = new TrayIcon(trayIconDefault, this.getTitle(), trayMenu);
                 trayIcon.setImageAutoSize(false);
                 tray.add(trayIcon);
@@ -2096,27 +2096,27 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     @Override
     public void onHotKey(HotKey hotkey) {
         String shortcut = "";
-        
-        if (hotkey.toString().contains("ctrl")){
+
+        if (hotkey.toString().contains("ctrl")) {
             shortcut += " control";
         }
-        if (hotkey.toString().contains("alt")){
+        if (hotkey.toString().contains("alt")) {
             shortcut += " alt";
         }
-        if (hotkey.toString().contains("shift")){
+        if (hotkey.toString().contains("shift")) {
             shortcut += " shift";
         }
         shortcut += " " + KeyEvent.getKeyText(hotkey.keyStroke.getKeyCode());
-        
+
         shortcut = shortcut.trim().toUpperCase().replaceAll("  ", " ");
-        if (shortcut.equals(shortcutRecording.toUpperCase())){
+        if (shortcut.equals(shortcutRecording.toUpperCase())) {
             if (tglRecordVideo.isEnabled()) {
-                    tglRecordVideo.doClick();
-                }
-        } else if (shortcut.equals(shortcutStreaming.toUpperCase())){
-         if (tglStreamToServer.isEnabled()) {
-                    tglStreamToServer.doClick();
-                }   
+                tglRecordVideo.doClick();
+            }
+        } else if (shortcut.equals(shortcutStreaming.toUpperCase())) {
+            if (tglStreamToServer.isEnabled()) {
+                tglStreamToServer.doClick();
+            }
         }
     }
 }
