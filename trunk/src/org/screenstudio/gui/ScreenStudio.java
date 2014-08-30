@@ -739,7 +739,6 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         trayMenu.add(mnuExit);
 
         setBackground(java.awt.Color.lightGray);
-        setLocationByPlatform(true);
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
