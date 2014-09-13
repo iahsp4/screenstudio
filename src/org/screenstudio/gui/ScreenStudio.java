@@ -102,8 +102,8 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
      */
     public ScreenStudio() {
         initComponents();
-        this.setTitle("ScreenStudio 1.2.8");
-        
+        this.setTitle("ScreenStudio 1.3.0");
+
         try {
             icon = javax.imageio.ImageIO.read(this.getClass().getResource("icon.png"));
             iconRunning = javax.imageio.ImageIO.read(this.getClass().getResource("iconRunning.png"));
@@ -346,26 +346,42 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             }
             mnuRecord.setEnabled(tabs.isEnabledAt(0));
             mnuStream.setEnabled(tabs.isEnabledAt(1));
-            Microphone[] audios = Microphone.getSources();
-            cboAudioSource.setModel(new DefaultComboBoxModel());
-            cboAudioMonitors.setModel(new DefaultComboBoxModel());
-
-            cboAudioSource.addItem(new Microphone());
-            cboAudioMonitors.addItem(new Microphone());
-            for (Microphone m : audios) {
-                if (m.getDevice().endsWith(".monitor")) {
-                    cboAudioMonitors.addItem(m);
-                } else {
-                    cboAudioSource.addItem(m);
-                }
-            }
-            cbowebcamSource.setModel(new DefaultComboBoxModel(Webcam.getSources()));
-            cboScreen.setModel(new DefaultComboBoxModel(Screen.getSources()));
+            updateSources();
 
         } catch (Exception ex) {
             MsgLogs logs = new MsgLogs("Updating controls...", ex, this, true);
             logs.setLocationByPlatform(true);
             logs.setVisible(true);
+        }
+    }
+
+    private void updateSources() throws IOException {
+        int selectedAudio = cboAudioSource.getSelectedIndex();
+        int selectedMonitor = cboAudioMonitors.getSelectedIndex();
+        int selectedWebcam = cbowebcamSource.getSelectedIndex();
+        Microphone[] audios = Microphone.getSources();
+        cboAudioSource.setModel(new DefaultComboBoxModel());
+        cboAudioMonitors.setModel(new DefaultComboBoxModel());
+
+        cboAudioSource.addItem(new Microphone());
+        cboAudioMonitors.addItem(new Microphone());
+        for (Microphone m : audios) {
+            if (m.getDevice().endsWith(".monitor")) {
+                cboAudioMonitors.addItem(m);
+            } else {
+                cboAudioSource.addItem(m);
+            }
+        }
+        cbowebcamSource.setModel(new DefaultComboBoxModel(Webcam.getSources()));
+        cboScreen.setModel(new DefaultComboBoxModel(Screen.getSources()));
+        if (selectedAudio < cboAudioSource.getItemCount()){
+            cboAudioSource.setSelectedIndex(selectedAudio);
+        }
+        if (selectedMonitor < cboAudioMonitors.getItemCount()){
+            cboAudioMonitors.setSelectedIndex(selectedMonitor);
+        }
+        if (selectedWebcam < cbowebcamSource.getItemCount()){
+            cbowebcamSource.setSelectedIndex(selectedWebcam);
         }
     }
 
@@ -691,6 +707,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         mnuChkRemoteWebServer = new javax.swing.JCheckBoxMenuItem();
         mnuSetCaptureArea = new javax.swing.JMenuItem();
         mnuCaptureWindow = new javax.swing.JMenuItem();
+        mnuRefreshSources = new javax.swing.JMenuItem();
         mnuAdvanced = new javax.swing.JMenu();
         mnuResetPreferences = new javax.swing.JMenuItem();
         mnuSetVideoFolder = new javax.swing.JMenuItem();
@@ -1323,6 +1340,14 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         });
         mnuFile.add(mnuCaptureWindow);
 
+        mnuRefreshSources.setText(bundle.getString("REFRESHSOURCES")); // NOI18N
+        mnuRefreshSources.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuRefreshSourcesActionPerformed(evt);
+            }
+        });
+        mnuFile.add(mnuRefreshSources);
+
         mnuAdvanced.setText(bundle.getString("ADVANCED")); // NOI18N
 
         mnuResetPreferences.setText(bundle.getString("RESETPREFERENCES")); // NOI18N
@@ -1897,6 +1922,14 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         }
     }//GEN-LAST:event_mnuSystemCheckActionPerformed
 
+    private void mnuRefreshSourcesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRefreshSourcesActionPerformed
+        try {
+            updateSources();
+        } catch (IOException ex) {
+            Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mnuRefreshSourcesActionPerformed
+
     private void setCaptureArea() {
         CaptureScreenSize capture = new CaptureScreenSize(this, true);
         Screen s = (Screen) cboScreen.getSelectedItem();
@@ -2019,6 +2052,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private javax.swing.JMenuItem mnuIdentifyScreen;
     private javax.swing.JMenuItem mnuOpen;
     private java.awt.CheckboxMenuItem mnuRecord;
+    private javax.swing.JMenuItem mnuRefreshSources;
     private javax.swing.JMenuItem mnuResetPreferences;
     private javax.swing.JMenuItem mnuSetCaptureArea;
     private javax.swing.JMenuItem mnuSetVideoFolder;
