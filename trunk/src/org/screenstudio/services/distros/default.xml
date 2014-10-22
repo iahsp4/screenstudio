@@ -56,10 +56,13 @@ in the final command line.  Types supported are: "webcam" and "overlay"
 - Command name supported: WEBCAM, DESKTOP 
 -->
 <root>
-    <services author="Patrick Balleux" os="Ubuntu 14.04" backend="libav-tools" version="1.2">
+    <services author="Patrick Balleux" os="Ubuntu 14.04" backend="libav-tools" version="1.3">
         <service name="Twitch.tv" target="RTMP">
             <commands>
                 <command name="WEBCAM">
+                    avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f @MUXER @OUTSINK
+                </command>
+                <command name="WEBCAMDESKTOP">
                     avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f @MUXER @OUTSINK
                 </command>
                 <command name="DESKTOP">
@@ -122,6 +125,9 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         <service name="Hitbox" target="RTMP">
             <commands>
                 <command name="WEBCAM">
+                    avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f @MUXER @OUTSINK
+                </command>
+                <command name="WEBCAMDESKTOP">
                     avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f @MUXER @OUTSINK
                 </command>
                 <command name="DESKTOP">
@@ -181,6 +187,9 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         <service name="Ustream/Generic" target="RTMP">
             <commands>
                 <command name="WEBCAM">
+                    avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f @MUXER @OUTSINK
+                </command>
+                <command name="WEBCAMDESKTOP">
                     avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f @MUXER @OUTSINK
                 </command>
                 <command name="DESKTOP">
@@ -227,6 +236,9 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         <service name="Youtube Live" target="RTMP">
             <commands>
                 <command name="WEBCAM">
+                    avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f @MUXER @OUTSINK
+                </command>
+                <command name="WEBCAMDESKTOP">
                     avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f @MUXER @OUTSINK
                 </command>
                 <command name="DESKTOP">
@@ -275,6 +287,9 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         <service name="Record to FLV" target="FILE">
             <commands>
                 <command name="WEBCAM">
+                    avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f mpegts @OUTSINK
+                </command>
+                <command name="WEBCAMDESKTOP">
                     avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2 -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f mpegts @OUTSINK
                 </command>
                 <command name="DESKTOP">
@@ -325,6 +340,9 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         <service name="Record to MP4" target="FILE">
             <commands>
                 <command name="WEBCAM">
+                    avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f mpegts @OUTSINK
+                </command>
+                <command name="WEBCAMDESKTOP">
                     avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f mpegts @OUTSINK
                 </command>
                 <command name="DESKTOP">
@@ -375,6 +393,9 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         <service name="Record to YUV+WAV" target="FILE">
             <commands>
                 <command name="WEBCAM">
+                    avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -s @OUTWx@OUTH  -ar @OUTAUDIORATE -ab @OUTAUDIOBITRATEk -y -vcodec @VIDEOCODEC -acodec @AUDIOCODEC @OUTSINKyuv @OUTSINKwav
+                </command>
+                <command name="WEBCAMDESKTOP">
                     avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -ab @OUTAUDIOBITRATEk -y -vcodec @VIDEOCODEC -acodec @AUDIOCODEC @OUTSINKyuv @OUTSINKwav
                 </command>
                 <command name="DESKTOP">
@@ -414,6 +435,9 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         <service name="Record to MPEGTS" target="FILE">
             <commands>
                 <command name="WEBCAM">
+                    avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -s @OUTWx@OUTH -r @OUTFPS -g @GROUP -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -f mpegts -strict experimental -y @OUTSINK
+                </command>
+                <command name="WEBCAMDESKTOP">
                     avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH -g @GROUP -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -f mpegts -strict experimental -y @OUTSINK
                 </command>
                 <command name="DESKTOP">
@@ -453,7 +477,10 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         </service>
          <service name="Record to OGG" target="FILE">
             <commands>
-               <command name="WEBCAM">
+                <command name="WEBCAM">
+                    avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -s @OUTWx@OUTH -r @OUTFPS -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f ogg @OUTSINK
+                </command>
+               <command name="WEBCAMDESKTOP">
                     avconv -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2 -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f ogg @OUTSINK
                 </command>
                 <command name="DESKTOP">

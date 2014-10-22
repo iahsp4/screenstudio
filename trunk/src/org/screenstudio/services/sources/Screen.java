@@ -34,15 +34,15 @@ import org.screenstudio.services.Profile;
  */
 public class Screen {
 
-    private Rectangle size = null;
-    private String id = null;
+    private Rectangle size = new Rectangle(0,0);
+    private String id = "";
     private Webcam webcam = null;
     private Overlay overlay = null;
     private Microphone microphone = null;
     private Microphone monitor = null;
     private Profile profile = null;
     private Command command = null;
-    private int screenIndex = 1;
+    private int screenIndex = -1;
     private int fps = 10;
 
     @Override
@@ -56,6 +56,7 @@ public class Screen {
         GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] devices = g.getScreenDevices();
         int i = 1;
+        list.add(new Screen());
         for (GraphicsDevice d : devices) {
             System.out.println(d.getIDstring() + " " + d.getDefaultConfiguration().getBounds().toString().replaceAll("java.awt.Rectangle", ""));
             Screen s = new Screen();
@@ -90,15 +91,15 @@ public class Screen {
             }
             line = reader.readLine();
         }
-        r.setSize(w,h);
-        r.setLocation(x,y);
+        r.setSize(w, h);
+        r.setLocation(x, y);
         in.close();
         isr.close();
         reader.close();
         p.destroy();
         return r;
     }
-   
+
     /**
      * @return the size
      */
@@ -240,7 +241,11 @@ public class Screen {
     }
 
     public String getLabel() {
-        return "Screen " + screenIndex;
+        if (screenIndex == -1) {
+            return "None";
+        } else {
+            return "Screen " + screenIndex;
+        }
     }
 
     public static void main(String[] args) {
