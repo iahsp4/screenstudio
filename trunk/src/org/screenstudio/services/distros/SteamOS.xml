@@ -342,6 +342,9 @@ in the final command line.  Types supported are: "webcam" and "overlay"
                 <command name="WEBCAM">
                     ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f mpegts @OUTSINK
                 </command>
+                <command name="WEBCAMDESKTOP">
+                    ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f mpegts @OUTSINK
+                </command>
                 <command name="DESKTOP">
                     ffmpeg -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f mpegts @OUTSINK
                 </command>
@@ -498,6 +501,9 @@ in the final command line.  Types supported are: "webcam" and "overlay"
                 <command name="WEBCAM">
                     ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f mpegts @OUTSINK
                 </command>
+                <command name="WEBCAMDESKTOP">
+                    ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f mpegts @OUTSINK
+                </command>
                 <command name="DESKTOP">
                     ffmpeg -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f mpegts @OUTSINK
                 </command>
@@ -651,6 +657,12 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         </service>
         <service name="Record to MKV - BPM Session (Gameplay)" target="FILE">
             <commands>
+                <command name="WEBCAM">
+                    ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f matroska @OUTSINK
+                </command>
+                <command name="WEBCAMDESKTOP">
+                    ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f matroska @OUTSINK
+                </command>
                 <command name="DESKTOP">
                     ffmpeg -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f matroska @OUTSINK
                 </command>
@@ -793,6 +805,12 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         </service>
         <service name="Record to YUV+WAV - BPM Session (Gameplay)" target="FILE">
             <commands>
+                <command name="WEBCAM">
+                    ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC -acodec @AUDIOCODEC @OUTSINKyuv @OUTSINKwav
+                </command>
+                <command name="WEBCAMDESKTOP">
+                    ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC -acodec @AUDIOCODEC @OUTSINKyuv @OUTSINKwav
+                </command>
                 <command name="DESKTOP">
                     ffmpeg -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC -acodec @AUDIOCODEC @OUTSINKyuv @OUTSINKwav
                 </command>
@@ -829,6 +847,9 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         </service>
         <service name="Record to YUV+WAV - Desktop" target="FILE">
             <commands>
+                <command name="WEBCAM">
+                    ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC -acodec @AUDIOCODEC @OUTSINKyuv @OUTSINKwav
+                </command>
                 <command name="WEBCAMDESKTOP">
                     ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :1.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -ab @OUTAUDIOBITRATEk -y -vcodec @VIDEOCODEC -acodec @AUDIOCODEC @OUTSINKyuv @OUTSINKwav
                 </command>
@@ -868,6 +889,9 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         </service>
         <service name="Record to MPEGTS - BPM Session" target="FILE">
             <commands>
+                <command name="WEBCAM">
+                    ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH -g @GROUP -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -f mpegts -strict experimental -y @OUTSINK
+                </command>
                 <command name="WEBCAMDESKTOP">
                     ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH -g @GROUP -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -f mpegts -strict experimental -y @OUTSINK
                 </command>
@@ -908,6 +932,12 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         </service>
         <service name="Record to MPEGTS - BPM Session (Gameplay)" target="FILE">
             <commands>
+                <command name="WEBCAM">
+                    ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH -g @GROUP -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -f mpegts -strict experimental -y @OUTSINK
+                </command>
+                <command name="WEBCAMDESKTOP">
+                    ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH -g @GROUP -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -f mpegts -strict experimental -y @OUTSINK
+                </command>
                 <command name="DESKTOP">
                     ffmpeg -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH -g @GROUP -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -f mpegts -strict experimental -y  @OUTSINK
                 </command>
@@ -945,6 +975,9 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         </service>
         <service name="Record to MPEGTS - Desktop" target="FILE">
             <commands>
+                <command name="WEBCAM">
+                    ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH -g @GROUP -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -f mpegts -strict experimental -y @OUTSINK
+                </command>
                 <command name="WEBCAMDESKTOP">
                     ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :1.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH -g @GROUP -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -f mpegts -strict experimental -y @OUTSINK
                 </command>
@@ -985,7 +1018,10 @@ in the final command line.  Types supported are: "webcam" and "overlay"
         </service>
         <service name="Record to OGG" target="FILE">
             <commands>
-               <command name="WEBCAMDESKTOP">
+                <command name="WEBCAM">
+                    ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f ogg @OUTSINK
+                </command>
+                <command name="WEBCAMDESKTOP">
                     ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2 -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f ogg @OUTSINK
                 </command>
                 <command name="DESKTOP">
@@ -1090,6 +1126,9 @@ in the final command line.  Types supported are: "webcam" and "overlay"
             <commands>
                 <command name="WEBCAM">
                     ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f pulse -i @PULSEDEV -s @OUTWx@OUTH -r @OUTFPS -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f ogg @OUTSINK
+                </command>
+               <command name="WEBCAMDESKTOP">
+                    ffmpeg -f video4linux2 -itsoffset @WEBCAMOFFSET -video_size @WEBCAMWx@WEBCAMH -i @WEBCAMDEV -f image2 -i @BANNERSRC -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f ogg @OUTSINK
                 </command>
                 <command name="DESKTOP">
                     ffmpeg -f x11grab -framerate @DESKTOPFPS -show_region 1 -video_size @DESKTOPWx@DESKTOPH -i :0.0+@DESKTOPX,@DESKTOPY -f pulse -i @PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f ogg @OUTSINK

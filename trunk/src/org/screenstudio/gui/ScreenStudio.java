@@ -103,7 +103,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
      */
     public ScreenStudio() {
         initComponents();
-        this.setTitle("ScreenStudio 1.4.0");
+        this.setTitle("ScreenStudio 1.4.1");
 
         try {
             icon = javax.imageio.ImageIO.read(this.getClass().getResource("icon.png"));
@@ -126,7 +126,8 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
 
     private void savePreferences() {
         try {
-            java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userRoot().node(this.getName());
+
+            java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userRoot().node(this.getClass().getSimpleName());
             prefs.put("name", txtStreamName.getText());
 
             if (((Microphone) cboAudioMonitors.getSelectedItem()).getDevice() != null) {
@@ -172,6 +173,12 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                 prefs.put("recordpreset", cboRecordPresets.getSelectedItem().toString());
             }
             prefs.flush();
+            if (java.util.prefs.Preferences.userRoot().nodeExists(this.getName())) {
+                //small bugs where prefs were saved in the wrong node.  Loading old prefs and deleting
+                prefs = java.util.prefs.Preferences.userRoot().node(this.getName());
+                prefs.removeNode();
+                prefs.flush();
+            }
         } catch (Exception ex) {
             MsgLogs logs = new MsgLogs("Saving preferences...", ex, this, true);
             logs.setLocationByPlatform(true);
@@ -232,7 +239,12 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
 
     private void loadPreferences(boolean reloading) {
         try {
-            java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userRoot().node(this.getName());
+
+            java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userRoot().node(this.getClass().getSimpleName());
+            if (java.util.prefs.Preferences.userRoot().nodeExists(this.getName())) {
+                //small bugs where prefs were saved in the wrong node.  Loading old prefs and deleting
+                prefs = java.util.prefs.Preferences.userRoot().node(this.getName());
+            }
             if (!reloading) {
                 String file = prefs.get("loadedconfigfile", null);
                 if (file != null) {
@@ -276,7 +288,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             String screenID = prefs.get("screensource", "");
             for (int i = 0; i < cboScreen.getItemCount(); i++) {
                 Screen s = (Screen) cboScreen.getItemAt(i);
-                if (s.getId().equals(screenID)) {
+                if (s.getLabel().equals(screenID)) {
                     cboScreen.setSelectedIndex(i);
                     break;
                 }
@@ -375,13 +387,13 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         }
         cbowebcamSource.setModel(new DefaultComboBoxModel(Webcam.getSources()));
         cboScreen.setModel(new DefaultComboBoxModel(Screen.getSources()));
-        if (selectedAudio < cboAudioSource.getItemCount()){
+        if (selectedAudio < cboAudioSource.getItemCount()) {
             cboAudioSource.setSelectedIndex(selectedAudio);
         }
-        if (selectedMonitor < cboAudioMonitors.getItemCount()){
+        if (selectedMonitor < cboAudioMonitors.getItemCount()) {
             cboAudioMonitors.setSelectedIndex(selectedMonitor);
         }
-        if (selectedWebcam < cbowebcamSource.getItemCount()){
+        if (selectedWebcam < cbowebcamSource.getItemCount()) {
             cbowebcamSource.setSelectedIndex(selectedWebcam);
         }
     }
@@ -1453,10 +1465,14 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     }// </editor-fold>//GEN-END:initComponents
 
     private void cboScreenItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboScreenItemStateChanged
-        lblScreenDimenssion.setText(((Screen) cboScreen.getSelectedItem()).getSize().toString().replaceAll("java.awt.Rectangle", ""));
-        for (int i = 0; i < cboScreen.getItemCount(); i++) {
-            Screen s = (Screen) cboScreen.getItemAt(i);
-            new ScreenIdentifier(s.getId(), (int) s.getSize().getX() + 100, (int) s.getSize().getY() + 100).setVisible(true);
+        if (cboScreen.getSelectedIndex() > 0) {
+            lblScreenDimenssion.setText(((Screen) cboScreen.getSelectedItem()).getSize().toString().replaceAll("java.awt.Rectangle", ""));
+            for (int i = 0; i < cboScreen.getItemCount(); i++) {
+                Screen s = (Screen) cboScreen.getItemAt(i);
+                new ScreenIdentifier(s.getId(), (int) s.getSize().getX() + 100, (int) s.getSize().getY() + 100).setVisible(true);
+            }
+        } else {
+            lblScreenDimenssion.setText("---");
         }
     }//GEN-LAST:event_cboScreenItemStateChanged
 
@@ -1606,11 +1622,11 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                     halign = JLabel.RIGHT;
                     break;
             }
-            if (cboScreen.getSelectedIndex() > 0 ){
+            if (cboScreen.getSelectedIndex() > 0) {
                 currentRenderer = new HTMLRenderer((int) s.getSize().getWidth(), (int) s.getSize().getHeight(), halign, valign);
             } else {
                 //No screen, just the webcam is selected...
-                s.setSize(new Rectangle((Integer) spinWebcamCaptureWidth.getValue(),(Integer) spinWebcamCaptureHeight.getValue()));
+                s.setSize(new Rectangle((Integer) spinWebcamCaptureWidth.getValue(), (Integer) spinWebcamCaptureHeight.getValue()));
                 currentRenderer = new HTMLRenderer((Integer) spinWebcamCaptureWidth.getValue(), (Integer) spinWebcamCaptureHeight.getValue(), halign, valign);
             }
             File currentBanner;
@@ -1632,8 +1648,8 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                 s.getWebcam().setHeight((Integer) spinWebcamCaptureHeight.getValue());
                 s.getWebcam().setWidth((Integer) spinWebcamCaptureWidth.getValue());
                 s.getWebcam().setOffset((Float) spinWebcamOffset.getValue());
-                if (cboScreen.getSelectedIndex()>0) {
-                    c = enc.getCommands().get("WEBCAMDESTOP");
+                if (cboScreen.getSelectedIndex() > 0) {
+                    c = enc.getCommands().get("WEBCAMDESKTOP");
                 } else {
                     c = enc.getCommands().get("WEBCAM");
                 }
@@ -1803,13 +1819,13 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         }
         int h = 480;
         int w = 480;
-        if (cboScreen.getSelectedIndex() > 0){
+        if (cboScreen.getSelectedIndex() > 0) {
             w = (int) ((s.getSize().getWidth() / s.getSize().getHeight()) * h);
             currentRenderer = new HTMLRenderer((int) s.getSize().getWidth(), (int) s.getSize().getHeight(), halign, valign);
         } else {
-            h = (Integer)spinWebcamCaptureHeight.getValue();
-            w = (Integer)spinWebcamCaptureWidth.getValue();
-            currentRenderer = new HTMLRenderer((Integer)spinWebcamCaptureWidth.getValue(), (Integer)spinWebcamCaptureHeight.getValue(), halign, valign);
+            h = (Integer) spinWebcamCaptureHeight.getValue();
+            w = (Integer) spinWebcamCaptureWidth.getValue();
+            currentRenderer = new HTMLRenderer((Integer) spinWebcamCaptureWidth.getValue(), (Integer) spinWebcamCaptureHeight.getValue(), halign, valign);
         }
         URL url = isURL(txtOverlayHTML.getText());
         BufferedImage img;
