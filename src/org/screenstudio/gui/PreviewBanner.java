@@ -87,6 +87,21 @@ public class PreviewBanner extends javax.swing.JDialog {
                 Image resized = capture.getScaledInstance(width, height, SCALE_SMOOTH);
                 lblPreview.setIcon(new ImageIcon(resized));
                 lblPreview.setSize(width, height);
+            } else {
+                capture = new BufferedImage(width,height, BufferedImage.OPAQUE);
+                Graphics2D g = capture.createGraphics();
+                g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+                g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                g.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
+
+                g.drawImage(image, 0, 0, this);
+                g.dispose();
+                Image resized = capture.getScaledInstance(width, height, SCALE_SMOOTH);
+                lblPreview.setIcon(new ImageIcon(resized));
+                lblPreview.setSize(width, height);
             }
         } catch (AWTException ex) {
             Logger.getLogger(PreviewBanner.class.getName()).log(Level.SEVERE, null, ex);

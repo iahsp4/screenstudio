@@ -28,6 +28,7 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
@@ -102,7 +103,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
      */
     public ScreenStudio() {
         initComponents();
-        this.setTitle("ScreenStudio 1.3.0");
+        this.setTitle("ScreenStudio 1.4.0");
 
         try {
             icon = javax.imageio.ImageIO.read(this.getClass().getResource("icon.png"));
@@ -1605,7 +1606,13 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                     halign = JLabel.RIGHT;
                     break;
             }
-            currentRenderer = new HTMLRenderer((int) s.getSize().getWidth(), (int) s.getSize().getHeight(), halign, valign);
+            if (cboScreen.getSelectedIndex() > 0 ){
+                currentRenderer = new HTMLRenderer((int) s.getSize().getWidth(), (int) s.getSize().getHeight(), halign, valign);
+            } else {
+                //No screen, just the webcam is selected...
+                s.setSize(new Rectangle((Integer) spinWebcamCaptureWidth.getValue(),(Integer) spinWebcamCaptureHeight.getValue()));
+                currentRenderer = new HTMLRenderer((Integer) spinWebcamCaptureWidth.getValue(), (Integer) spinWebcamCaptureHeight.getValue(), halign, valign);
+            }
             File currentBanner;
             URL url = isURL(txtOverlayHTML.getText());
             if (url == null) {
@@ -1625,7 +1632,11 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                 s.getWebcam().setHeight((Integer) spinWebcamCaptureHeight.getValue());
                 s.getWebcam().setWidth((Integer) spinWebcamCaptureWidth.getValue());
                 s.getWebcam().setOffset((Float) spinWebcamOffset.getValue());
-                c = enc.getCommands().get("WEBCAM");
+                if (cboScreen.getSelectedIndex()>0) {
+                    c = enc.getCommands().get("WEBCAMDESTOP");
+                } else {
+                    c = enc.getCommands().get("WEBCAM");
+                }
             } else {
                 s.setWebcam(null);
                 c = enc.getCommands().get("DESKTOP");
@@ -1791,8 +1802,15 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                 break;
         }
         int h = 480;
-        int w = (int) ((s.getSize().getWidth() / s.getSize().getHeight()) * h);
-        currentRenderer = new HTMLRenderer((int) s.getSize().getWidth(), (int) s.getSize().getHeight(), halign, valign);
+        int w = 480;
+        if (cboScreen.getSelectedIndex() > 0){
+            w = (int) ((s.getSize().getWidth() / s.getSize().getHeight()) * h);
+            currentRenderer = new HTMLRenderer((int) s.getSize().getWidth(), (int) s.getSize().getHeight(), halign, valign);
+        } else {
+            h = (Integer)spinWebcamCaptureHeight.getValue();
+            w = (Integer)spinWebcamCaptureWidth.getValue();
+            currentRenderer = new HTMLRenderer((Integer)spinWebcamCaptureWidth.getValue(), (Integer)spinWebcamCaptureHeight.getValue(), halign, valign);
+        }
         URL url = isURL(txtOverlayHTML.getText());
         BufferedImage img;
         try {
