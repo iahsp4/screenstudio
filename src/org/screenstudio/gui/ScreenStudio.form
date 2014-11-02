@@ -220,7 +220,6 @@
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
       <Color blue="c0" green="c0" id="lightGray" palette="1" red="c0" type="palette"/>
     </Property>
-    <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="mnuBar"/>
@@ -262,9 +261,13 @@
           </Group>
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="txtStatus" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="tabs" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="txtStatus" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnPreview" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -285,9 +288,12 @@
               <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
               <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="tabs" min="-2" pref="260" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
-              <Component id="txtStatus" min="-2" pref="32" max="-2" attributes="0"/>
+              <Component id="tabs" pref="280" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="btnPreview" min="-2" pref="32" max="-2" attributes="0"/>
+                  <Component id="txtStatus" min="-2" pref="32" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -383,7 +389,7 @@
                               </Group>
                               <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="cboRecordServices" pref="481" max="32767" attributes="0"/>
+                                  <Component id="cboRecordServices" pref="428" max="32767" attributes="0"/>
                                   <Component id="cboRecordProfile" alignment="0" max="32767" attributes="0"/>
                                   <Component id="cboRecordPresets" alignment="0" max="32767" attributes="0"/>
                               </Group>
@@ -419,7 +425,7 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="lblRecordTargetRecordingFile" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="60" max="32767" attributes="0"/>
+                              <EmptySpace pref="80" max="32767" attributes="0"/>
                               <Component id="lblRemoteRecordMessage" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -558,7 +564,7 @@
                                       <Component id="lblStreamPresets" min="-2" pref="120" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                                       <Component id="cboStreamPresets" min="-2" pref="197" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="228" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="175" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="lblRemoteRTMPMessage" max="32767" attributes="0"/>
                               </Group>
@@ -595,7 +601,7 @@
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace type="separate" pref="24" max="32767" attributes="0"/>
+                              <EmptySpace type="separate" max="32767" attributes="0"/>
                               <Component id="tglStreamToServer" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -736,135 +742,6 @@
             </Component>
           </SubComponents>
         </Container>
-        <Container class="javax.swing.JPanel" name="panBanner">
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Overlay">
-                <Property name="tabTitle" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="org/screenstudio/gui/lang/languages.properties" key="TAB_OVERLAY" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                </Property>
-              </JTabbedPaneConstraints>
-            </Constraint>
-          </Constraints>
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="scrollHTML" max="32767" attributes="0"/>
-                          <Group type="102" attributes="0">
-                              <Component id="lblOverlayLayout" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="cboOverlayLayout" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="lblWebcamLayout" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="cboWebcamLayout" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="btnPreview" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="scrollHTML" pref="148" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="cboWebcamLayout" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="lblWebcamLayout" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="lblOverlayLayout" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="cboOverlayLayout" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="btnPreview" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Component class="javax.swing.JComboBox" name="cboWebcamLayout">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="5">
-                    <StringItem index="0" value="Lower Right"/>
-                    <StringItem index="1" value="Lower Left"/>
-                    <StringItem index="2" value="Top Right"/>
-                    <StringItem index="3" value="Top Left"/>
-                    <StringItem index="4" value="Center"/>
-                  </StringArray>
-                </Property>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="lblWebcamLayout">
-              <Properties>
-                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="org/screenstudio/gui/lang/languages.properties" key="WEBCAMLAYOUT" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                </Property>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="lblOverlayLayout">
-              <Properties>
-                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="org/screenstudio/gui/lang/languages.properties" key="IMAGELAYOUT" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                </Property>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="cboOverlayLayout">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="Bottom"/>
-                    <StringItem index="1" value="Top"/>
-                    <StringItem index="2" value="Bottom Right"/>
-                    <StringItem index="3" value="Top Right"/>
-                  </StringArray>
-                </Property>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="btnPreview">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/org/screenstudio/gui/iconPreview.png"/>
-                </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Preview banner location"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPreviewActionPerformed"/>
-              </Events>
-            </Component>
-            <Container class="javax.swing.JScrollPane" name="scrollHTML">
-              <AuxValues>
-                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-              </AuxValues>
-
-              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-              <SubComponents>
-                <Component class="javax.swing.JTextArea" name="txtOverlayHTML">
-                  <Properties>
-                    <Property name="columns" type="int" value="20"/>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Ubuntu" size="12" style="0"/>
-                    </Property>
-                    <Property name="rows" type="int" value="5"/>
-                    <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;    &lt;head&gt;&#xa;        &lt;title&gt;ScreenStudio&lt;/title&gt;&#xa;        &lt;style&gt;&#xa;            h1 {color:#000000;font:48px ubuntu,sans-serif;font-weight:bold;text-decoration: underline; }&#xa;           body {color:#3333dd;font:36px ubuntu,sans-serif;font-weight:bold;}&#xa;        &lt;/style&gt;&#xa;    &lt;/head&gt;&#xa;    &lt;body&gt;&#xa;        &lt;table&gt;&#xa;            &lt;tr&gt;&#xa;                &lt;td&gt;&lt;img width=170 height=170 src=&quot;http://screenstudio.crombz.com/logo.png&quot;/&gt;&lt;/td&gt;&#xa;                &lt;td valign=&quot;top&quot;&gt;&#xa;                    &lt;h1&gt;ScreenStudio&lt;/h1&gt;&#xa;                    Streaming, made easy!&#xa;                &lt;/td&gt;&#xa;            &lt;/tr&gt;&#xa;        &lt;/table&gt;&#xa;    &lt;/body&gt;&#xa;&lt;/html&gt;"/>
-                    <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="org/screenstudio/gui/lang/languages.properties" key="HTMLTOOLTIPCOMMENT" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                    </Property>
-                  </Properties>
-                </Component>
-              </SubComponents>
-            </Container>
-          </SubComponents>
-        </Container>
         <Container class="javax.swing.JPanel" name="panSources">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
@@ -902,6 +779,10 @@
                                               <Component id="lblWebcamWidth" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                                               <Component id="spinWebcamCaptureHeight" min="-2" pref="75" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="lblWebcamLayout" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="cboWebcamLayout" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -932,7 +813,7 @@
                               <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                               <Component id="cboAudioSource" min="-2" pref="246" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="cboAudioMonitors" pref="229" max="32767" attributes="0"/>
+                              <Component id="cboAudioMonitors" pref="176" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -963,6 +844,10 @@
                           <Component id="spinWebcamCaptureWidth" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lblWebcamWidth" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="spinWebcamCaptureHeight" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" alignment="3" groupAlignment="3" attributes="0">
+                              <Component id="lblWebcamLayout" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cboWebcamLayout" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -1150,6 +1035,26 @@
                 <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cboAudioMonitorsItemStateChanged"/>
               </Events>
             </Component>
+            <Component class="javax.swing.JLabel" name="lblWebcamLayout">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="org/screenstudio/gui/lang/languages.properties" key="WEBCAMLAYOUT" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="cboWebcamLayout">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="5">
+                    <StringItem index="0" value="Lower Right"/>
+                    <StringItem index="1" value="Lower Left"/>
+                    <StringItem index="2" value="Top Right"/>
+                    <StringItem index="3" value="Top Left"/>
+                    <StringItem index="4" value="Center"/>
+                  </StringArray>
+                </Property>
+              </Properties>
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="panOptions">
@@ -1168,35 +1073,47 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="lblOptionsRecordShortkey" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="chkOptionRecordControl" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="chkOptionRecordAlt" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="chkOptionRecordShift" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="txtOptionRecordKey" min="-2" pref="28" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <Component id="btnOptionsApply" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="lblOptionsStreamShortkey" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="chkOptionStreamControl" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="chkOptionStreamAlt" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="chkOptionStreamShift" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="txtOptionStreamKey" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="lblOptionsRecordShortkey" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="chkOptionRecordControl" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="chkOptionRecordAlt" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="chkOptionRecordShift" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="txtOptionRecordKey" min="-2" pref="28" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="lblOptionsStreamShortkey" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="lblOverlayLayout" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="cboOverlayLayout" min="-2" max="-2" attributes="0"/>
+                                          <Group type="102" attributes="0">
+                                              <Component id="chkOptionStreamControl" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="chkOptionStreamAlt" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="chkOptionStreamShift" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="txtOptionStreamKey" max="32767" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                  </Group>
+                              </Group>
+                              <EmptySpace min="0" pref="181" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="246" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="btnOptionsApply" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -1220,7 +1137,12 @@
                           <Component id="chkOptionStreamShift" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="txtOptionStreamKey" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="106" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lblOverlayLayout" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cboOverlayLayout" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="92" max="32767" attributes="0"/>
                       <Component id="btnOptionsApply" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -1302,7 +1224,37 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnOptionsApplyActionPerformed"/>
               </Events>
             </Component>
+            <Component class="javax.swing.JLabel" name="lblOverlayLayout">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="org/screenstudio/gui/lang/languages.properties" key="IMAGELAYOUT" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="cboOverlayLayout">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="4">
+                    <StringItem index="0" value="Bottom"/>
+                    <StringItem index="1" value="Top"/>
+                    <StringItem index="2" value="Bottom Right"/>
+                    <StringItem index="3" value="Top Right"/>
+                  </StringArray>
+                </Property>
+              </Properties>
+            </Component>
           </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="panOverlayEditor">
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Overlay">
+                <Property name="tabTitle" type="java.lang.String" value="Overlay"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
         </Container>
       </SubComponents>
     </Container>
@@ -1316,6 +1268,17 @@
         </Property>
         <Property name="text" type="java.lang.String" value="by Patrick Balleux"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnPreview">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/org/screenstudio/gui/iconPreview.png"/>
+        </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Preview banner location"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPreviewActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
