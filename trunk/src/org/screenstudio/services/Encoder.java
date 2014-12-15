@@ -19,7 +19,9 @@ package org.screenstudio.services;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -53,8 +55,8 @@ public class Encoder {
     private final String serviceName;
     private final String target;
 
-    public static String parse(Screen s, Server server, String streamKey) throws IOException, InterruptedException {
-        String command = parseGeneric(s);
+    public static String parse(Screen s, Server server, String streamKey, File videoFolder) throws IOException, InterruptedException {
+        String command = parseGeneric(s, videoFolder);
         if (server == null) {
             command = command.replaceAll("@OUTSINK", streamKey);
         } else {
@@ -63,20 +65,26 @@ public class Encoder {
         return command;
     }
 
-    public static String parse(Screen s, File f) throws IOException, InterruptedException {
-        String command = parseGeneric(s);
+    public static String parse(Screen s, File f, File videoFolder) throws IOException, InterruptedException {
+        String command = parseGeneric(s, videoFolder);
         command = command.replaceAll("@OUTSINK", f.getAbsolutePath());
         return command;
     }
 
-    public static String parse(Screen s, String url) throws IOException, InterruptedException {
-        String command = parseGeneric(s);
-        command = command.replaceAll("@OUTSINK", url);
-        return command;
-    }
-
-    private static String parseGeneric(Screen s) throws IOException, InterruptedException {
+    private static String parseGeneric(Screen s, File videoFolder) throws IOException, InterruptedException {
         String command = s.getCommand().getCommandLine();
+        if (command.contains("@LOCALSINK")) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+            String filename = "screenstudio-" + format.format(new Date()) + "." + s.getProfile().getMuxer();
+            if (!videoFolder.exists()) {
+                videoFolder = new File(System.getProperty("user.home"), "ScreenStudio");
+                if (!videoFolder.exists()) {
+                    videoFolder.mkdir();
+                }
+            }
+            File out = new File(videoFolder, filename);
+            command = command.replaceAll("@LOCALSINK", out.getAbsolutePath());
+        }
         if (s.getWebcam() != null && s.getWebcam().getDevice() != null) {
             command = command.replaceAll("@WEBCAMFPS", s.getWebcam().getFps() + "");
             command = command.replaceAll("@WEBCAMOFFSET", s.getWebcam().getOffset() + "");
@@ -307,16 +315,16 @@ public class Encoder {
             mapping.load(in);
             in.close();
             Enumeration list = mapping.propertyNames();
-            while (list.hasMoreElements()){
+            while (list.hasMoreElements()) {
                 String key = list.nextElement().toString();
-                if (currentDistro.startsWith(key.toUpperCase())){
+                if (currentDistro.startsWith(key.toUpperCase())) {
                     //Loading specific xml configuration for current distro
-                    retValue = "/org/screenstudio/services/distros/" +mapping.getProperty(key);
+                    retValue = "/org/screenstudio/services/distros/" + mapping.getProperty(key);
                     System.out.println("Using " + retValue + " for " + currentDistro);
                     break;
                 }
             }
-            
+
         } catch (Exception ex) {
             System.err.println("ERROR loading distro name: " + ex.getMessage());
         }
