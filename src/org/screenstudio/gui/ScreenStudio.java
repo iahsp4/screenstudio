@@ -1479,7 +1479,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                     s.setProfile(p);
                     Server server = (Server) cboRTMPServer.getSelectedItem();
 
-                    String commandLine = Encoder.parse(s, server, txtStreamName.getText());
+                    String commandLine = Encoder.parse(s, server, txtStreamName.getText(),videoFolder);
                     startProcess(commandLine);
 
                 }
@@ -1686,7 +1686,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                     }
                     File out = new File(videoFolder, filename);
                     lblRecordTargetRecordingFile.setText("Video file " + out.getAbsolutePath());
-                    String commandLine = Encoder.parse(s, out);
+                    String commandLine = Encoder.parse(s, out,videoFolder);
                     logCommand(out, commandLine);
                     startProcess(commandLine);
                 }
