@@ -87,7 +87,7 @@ public class Webcam {
         this.id = id;
     }
 
-    public static Webcam[] getSources() throws IOException {
+    public static Webcam[] getSources() throws IOException, InterruptedException {
         java.util.ArrayList<Webcam> list = new java.util.ArrayList<Webcam>();
         System.out.println("Webcam List:");
         Webcam w = new Webcam(null, "None", "None");
@@ -121,7 +121,7 @@ public class Webcam {
         return list.toArray(new Webcam[list.size()]);
     }
 
-    private static ArrayList<Webcam> getOSXDevices() throws IOException {
+    private static ArrayList<Webcam> getOSXDevices() throws IOException, InterruptedException {
         ArrayList<Webcam> list = new ArrayList<Webcam>();
         if (osx.FFMpegTools.checkForFFMPEG()) {
             String command = osx.FFMpegTools.getBinaryPath() + "/ffmpeg -list_devices true -f avfoundation -i dummy";

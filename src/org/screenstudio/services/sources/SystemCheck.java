@@ -18,6 +18,8 @@ package org.screenstudio.services.sources;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.screenstudio.gui.MsgLogs;
 
 /**
@@ -29,11 +31,15 @@ public class SystemCheck {
     public static boolean isSystemReady(boolean interactive) {
         ArrayList<String> msgs = new ArrayList<String>();
         if (Screen.isOSX()) {
-            if (!osx.FFMpegTools.checkForFFMPEG()) {
-                msgs.add("----");
-                msgs.add("OSX detected but could not locate FFMPEG");
-                msgs.add("ScreenStudio has tried failed to deploy FFMPEG in [HOME]/Applications folder...");
-                msgs.add("----");
+            try {
+                if (!osx.FFMpegTools.checkForFFMPEG()) {
+                    msgs.add("----");
+                    msgs.add("OSX detected but could not locate FFMPEG");
+                    msgs.add("ScreenStudio has tried failed to deploy FFMPEG in [HOME]/Applications folder...");
+                    msgs.add("----");
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SystemCheck.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             //Looks for avconv or ffmpeg
