@@ -100,26 +100,35 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private String shortcutRecording = "control shift R";
     private String shortcutStreaming = "control shift S";
     private EkitCore overlayEditor = new EkitCore(false, null, null, null, null, null, true, false, true, false, null, null, false, false, false, true, EkitCore.TOOLBAR_DEFAULT_MULTI, true);
+
     /**
      * Creates new form ScreenStudio
      */
     public ScreenStudio() {
         initComponents();
-        this.setTitle("ScreenStudio 1.4.2");
+        this.setTitle("ScreenStudio 1.5.0");
 
+        if (Screen.isOSX()) {
+            mnuCaptureWindow.setVisible(false);
+            spinWebcamCaptureHeight.setVisible(false);
+            spinWebcamCaptureWidth.setVisible(false);
+            mnuSetCaptureArea.setVisible(false);
+            lblScreenDimenssion.setVisible(false);
+        }
         try {
             icon = javax.imageio.ImageIO.read(this.getClass().getResource("icon.png"));
             iconRunning = javax.imageio.ImageIO.read(this.getClass().getResource("iconRunning.png"));
             iconStarting = javax.imageio.ImageIO.read(this.getClass().getResource("iconStarting.png"));
             this.setIconImage(javax.imageio.ImageIO.read(this.getClass().getResource("logo.png")));
             displaySystemTrayIcon();
+
         } catch (IOException ex) {
             Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        panOverlayEditor.add(overlayEditor.getMenuBar(),BorderLayout.NORTH);
-        panOverlayEditor.add(overlayEditor.getToolBarFormat(true),BorderLayout.SOUTH);
-        panOverlayEditor.add(overlayEditor,BorderLayout.CENTER);
+
+        panOverlayEditor.add(overlayEditor.getMenuBar(), BorderLayout.NORTH);
+        panOverlayEditor.add(overlayEditor.getToolBarFormat(true), BorderLayout.SOUTH);
+        panOverlayEditor.add(overlayEditor, BorderLayout.CENTER);
         updateControls(null);
         loadPreferences(false);
         initializeShortCuts();
@@ -149,7 +158,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             }
 
             if (((Webcam) cbowebcamSource.getSelectedItem()).getDevice() != null) {
-                prefs.put("webcamsource", ((Webcam) cbowebcamSource.getSelectedItem()).getDevice().getAbsolutePath());
+                prefs.put("webcamsource", ((Webcam) cbowebcamSource.getSelectedItem()).getDevice());
             } else {
                 prefs.remove("webcamsource");
             }
@@ -283,7 +292,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             String wdev = prefs.get("webcamsource", "ScreenStudio");
             for (int i = 0; i < cbowebcamSource.getItemCount(); i++) {
                 Webcam s = (Webcam) cbowebcamSource.getItemAt(i);
-                if (s.getDevice() != null && s.getDevice().getAbsolutePath().equals(wdev)) {
+                if (s.getDevice() != null && s.getDevice().equals(wdev)) {
                     cbowebcamSource.setSelectedIndex(i);
                     break;
                 }
@@ -1455,7 +1464,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             lblScreenDimenssion.setText(((Screen) cboScreen.getSelectedItem()).getSize().toString().replaceAll("java.awt.Rectangle", ""));
             for (int i = 0; i < cboScreen.getItemCount(); i++) {
                 Screen s = (Screen) cboScreen.getItemAt(i);
-                new ScreenIdentifier(s.getId(), (int) s.getSize().getX() + 100, (int) s.getSize().getY() + 100).setVisible(true);
+                new ScreenIdentifier(s.getLabel(), (int) s.getSize().getX() + 100, (int) s.getSize().getY() + 100).setVisible(true);
             }
         } else {
             lblScreenDimenssion.setText("---");
@@ -1479,7 +1488,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                     s.setProfile(p);
                     Server server = (Server) cboRTMPServer.getSelectedItem();
 
-                    String commandLine = Encoder.parse(s, server, txtStreamName.getText(),videoFolder);
+                    String commandLine = Encoder.parse(s, server, txtStreamName.getText(), videoFolder);
                     startProcess(commandLine);
 
                 }
@@ -1686,7 +1695,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                     }
                     File out = new File(videoFolder, filename);
                     lblRecordTargetRecordingFile.setText("Video file " + out.getAbsolutePath());
-                    String commandLine = Encoder.parse(s, out,videoFolder);
+                    String commandLine = Encoder.parse(s, out, videoFolder);
                     logCommand(out, commandLine);
                     startProcess(commandLine);
                 }

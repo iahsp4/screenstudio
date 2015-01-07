@@ -16,9 +16,12 @@
  */
 package org.screenstudio.services.sources;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import org.screenstudio.services.Layout;
 
 /**
@@ -58,7 +61,7 @@ public class Webcam {
     private int width = 320;
     private int height = 240;
     private int fps = 10;
-    private File device = null;
+    private String device = null;
     private Layout layout = null;
     private String description = "";
     private String id = "";
@@ -78,7 +81,7 @@ public class Webcam {
         this.layout = layout;
     }
 
-    private Webcam(File dev, String id, String desc) {
+    private Webcam(String dev, String id, String desc) {
         device = dev;
         description = desc;
         this.id = id;
@@ -89,29 +92,83 @@ public class Webcam {
         System.out.println("Webcam List:");
         Webcam w = new Webcam(null, "None", "None");
         list.add(w);
-        File dev = new File("/dev");
-        if (dev.isDirectory()) {
-            File[] files = dev.listFiles();
-            for (File f : files) {
-                if (f.getName().startsWith("video")) {
-                    System.out.println(f.getName());
-                    Webcam source = new Webcam(f, f.getName(), "");
-                    list.add(source);
+        if (Screen.isOSX()) {
+            list.addAll(getOSXDevices());
+        } else {
+            File dev = new File("/dev");
+            if (dev.isDirectory()) {
+                File[] files = dev.listFiles();
+                for (File f : files) {
+                    if (f.getName().startsWith("video")) {
+                        System.out.println(f.getName());
+                        Webcam source = new Webcam(f.getAbsolutePath(), f.getName(), "");
+                        list.add(source);
+                    }
+                }
+            }
+
+            for (Webcam s : list) {
+                File desc = new File("/sys/class/video4linux", s.id + "/name");
+                if (desc.exists()) {
+                    InputStream in = desc.toURI().toURL().openStream();
+                    byte[] buffer = new byte[in.available()];
+                    in.read(buffer);
+                    in.close();
+                    s.description = new String(buffer);
                 }
             }
         }
-
-        for (Webcam s : list) {
-            File desc = new File("/sys/class/video4linux", s.id + "/name");
-            if (desc.exists()) {
-                InputStream in = desc.toURI().toURL().openStream();
-                byte[] buffer = new byte[in.available()];
-                in.read(buffer);
-                in.close();
-                s.description = new String(buffer);
-            }
-        }
         return list.toArray(new Webcam[list.size()]);
+    }
+
+    private static ArrayList<Webcam> getOSXDevices() throws IOException {
+        ArrayList<Webcam> list = new ArrayList<>();
+        if (osx.FFMpegTools.checkForFFMPEG()) {
+            String command = osx.FFMpegTools.getBinaryPath() + "/ffmpeg -list_devices true -f avfoundation -i dummy";
+            String line = "";
+            System.out.println(command);
+            Process p = Runtime.getRuntime().exec(command);
+            InputStream in = p.getErrorStream();
+            InputStreamReader isr = new InputStreamReader(in);
+            BufferedReader reader = new BufferedReader(isr);
+            line = reader.readLine();
+            while (line != null) {
+                if (line.endsWith("AVFoundation video devices:")) {
+                    // we have some audio sources
+                    line = reader.readLine();
+                    while (line != null && line.indexOf("input device") > 0 && !line.contains("audio devices")) {
+                        if (!line.contains("Capture screen")) {
+                            Webcam w = new Webcam("", "", "");
+                            w.description = "";
+                            w.id = "";
+                            String[] parts = line.split(" ");
+                            System.out.println(line);
+                            for (int i = parts.length - 1; i >= 0; i--) {
+                                if (parts[i].startsWith("[")) {
+                                    // reached device id
+                                    w.device = parts[i].substring(1, parts[i].length() - 1);
+                                    break;
+                                } else {
+                                    w.id = parts[i] + " " + w.id;
+                                }
+                            }
+                            w.id = w.id.trim();
+                            w.description = w.id;
+                            System.out.println(w.description);
+                            list.add(w);
+                        }
+                        line = reader.readLine();
+                    }
+                } else {
+                    line = reader.readLine();
+                }
+            }
+            reader.close();
+            isr.close();
+            in.close();
+            p.destroy();
+        }
+        return list;
     }
 
     /**
@@ -159,12 +216,12 @@ public class Webcam {
     /**
      * @return the device
      */
-    public File getDevice() {
+    public String getDevice() {
         return device;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return description;
     }
 }

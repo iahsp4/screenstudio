@@ -28,56 +28,65 @@ public class SystemCheck {
 
     public static boolean isSystemReady(boolean interactive) {
         ArrayList<String> msgs = new ArrayList<String>();
-        //Looks for avconv or ffmpeg
-        if (!new File("/usr/bin/avconv").exists() && !new File("/usr/bin/ffmpeg").exists()) {
-            msgs.add("----");
-            msgs.add("WARNING!");
-            msgs.add("libav-tools not detected...");
-            msgs.add("You won't be able to record or stream using AVCONV...");
-            msgs.add("Note: Install libav-tools (sudo apt-get install libav-tools)");
-            msgs.add("----");
+        if (Screen.isOSX()) {
+            if (!osx.FFMpegTools.checkForFFMPEG()) {
+                msgs.add("----");
+                msgs.add("OSX detected but could not locate FFMPEG");
+                msgs.add("ScreenStudio has tried failed to deploy FFMPEG in [HOME]/Applications folder...");
+                msgs.add("----");
+            }
+        } else {
+            //Looks for avconv or ffmpeg
+            if (!new File("/usr/bin/avconv").exists() && !new File("/usr/bin/ffmpeg").exists()) {
+                msgs.add("----");
+                msgs.add("WARNING!");
+                msgs.add("libav-tools not detected...");
+                msgs.add("You won't be able to record or stream using AVCONV...");
+                msgs.add("Note: Install libav-tools (sudo apt-get install libav-tools)");
+                msgs.add("----");
 
-        } else if (!new File("/usr/bin/avconv").exists() && new File("/usr/bin/ffmpeg").exists()) {
-            msgs.add("----");
-            msgs.add("INFO!");
-            msgs.add("libav-tools not detected but ffmpeg was...");
-            msgs.add("You'll have to use a FFMPEG based confoguration XML to record or stream");
-            msgs.add("Note: Install libav-tools (sudo apt-get install libav-tools)");
-            msgs.add("----");
-        }
+            } else if (!new File("/usr/bin/avconv").exists() && new File("/usr/bin/ffmpeg").exists()) {
+                msgs.add("----");
+                msgs.add("INFO!");
+                msgs.add("libav-tools not detected but ffmpeg was...");
+                msgs.add("You'll have to use a FFMPEG based confoguration XML to record or stream");
+                msgs.add("Note: Install libav-tools (sudo apt-get install libav-tools)");
+                msgs.add("----");
+            }
 
-        //Looks for libjna-tools
-        if (new File("/usr/share/doc/libjna-java").exists()) {
-            msgs.add("----");
-            msgs.add("WARNING!");
-            msgs.add("libjna-java was detected...");
-            msgs.add("You may not be able use the global shortcuts...");
-            msgs.add("ScreenStudio does provide its own library and may conflict with libjna-java.");
-            msgs.add("Note: Uninstall libjna-java (sudo apt-get remove libjna-java)");
-            msgs.add("Note: if shortcut keys do not work.");
-            msgs.add("Note: You can also replace jna.jar by your own by creating a symlink.");
-            msgs.add("----");
-        }
-        //Looks for xwininfo
-        if (!new File("/usr/bin/xwininfo").exists()) {
-            msgs.add("----");
-            msgs.add("WARNING!");
-            msgs.add("/usr/bin/xwininfo was not detected...");
-            msgs.add("You won't be able to capture a window area...");
-            msgs.add("----");
-        }
-        if (interactive) {
-            if (msgs.size() > 0) {
-                MsgLogs logs = new MsgLogs(msgs, null, true);
-                logs.setLocationByPlatform(true);
-                logs.setVisible(true);
-            } else {
-                msgs.add("Everyting looks good!");
-                msgs.add("Have fun!");
-                MsgLogs logs = new MsgLogs(msgs, null, true);
-                logs.setLocationByPlatform(true);
-                logs.setVisible(true);
-                msgs.clear();
+            //Looks for libjna-tools
+            if (new File("/usr/share/doc/libjna-java").exists()) {
+                msgs.add("----");
+                msgs.add("WARNING!");
+                msgs.add("libjna-java was detected...");
+                msgs.add("You may not be able use the global shortcuts...");
+                msgs.add("ScreenStudio does provide its own library and may conflict with libjna-java.");
+                msgs.add("Note: Uninstall libjna-java (sudo apt-get remove libjna-java)");
+                msgs.add("Note: if shortcut keys do not work.");
+                msgs.add("Note: You can also replace jna.jar by your own by creating a symlink.");
+                msgs.add("----");
+            }
+            //Looks for xwininfo
+            if (!new File("/usr/bin/xwininfo").exists()) {
+                msgs.add("----");
+                msgs.add("WARNING!");
+                msgs.add("/usr/bin/xwininfo was not detected...");
+                msgs.add("You won't be able to capture a window area...");
+                msgs.add("----");
+            }
+            if (interactive) {
+                if (msgs.size() > 0) {
+                    MsgLogs logs = new MsgLogs(msgs, null, true);
+                    logs.setLocationByPlatform(true);
+                    logs.setVisible(true);
+                } else {
+                    msgs.add("Everyting looks good!");
+                    msgs.add("Have fun!");
+                    MsgLogs logs = new MsgLogs(msgs, null, true);
+                    logs.setLocationByPlatform(true);
+                    logs.setVisible(true);
+                    msgs.clear();
+                }
             }
         }
         return msgs.isEmpty();

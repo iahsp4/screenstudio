@@ -73,6 +73,14 @@ public class Encoder {
 
     private static String parseGeneric(Screen s, File videoFolder) throws IOException, InterruptedException {
         String command = s.getCommand().getCommandLine();
+        if (command.contains("@BINARYPATH")){
+            if (Screen.isOSX()){
+                command = command.replaceAll("@BINARYPATH", osx.FFMpegTools.getBinaryPath());
+            }
+        }
+        if (command.contains("@SCREENDEV")){
+            command = command.replaceAll("@SCREENDEV", s.getId());
+        }
         if (command.contains("@LOCALSINK")) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
             String filename = "screenstudio-" + format.format(new Date()) + "." + s.getProfile().getMuxer();
@@ -90,7 +98,7 @@ public class Encoder {
             command = command.replaceAll("@WEBCAMOFFSET", s.getWebcam().getOffset() + "");
             command = command.replaceAll("@WEBCAMW", s.getWebcam().getWidth() + "");
             command = command.replaceAll("@WEBCAMH", s.getWebcam().getHeight() + "");
-            command = command.replaceAll("@WEBCAMDEV", s.getWebcam().getDevice().getAbsolutePath());
+            command = command.replaceAll("@WEBCAMDEV", s.getWebcam().getDevice());
             command = command.replaceAll("@WEBCAMLAYOUT", s.getWebcam().getLayout().getValue());
         }
         if (s.getOverlay() != null) {
@@ -305,23 +313,35 @@ public class Encoder {
         //Using default configuration.
         String retValue = "/org/screenstudio/services/distros/default.xml";
         try {
-            InputStream in = new File("/etc/issue").toURI().toURL().openStream();
-            byte[] buffer = new byte[in.available()];
-            in.read(buffer);
-            in.close();
-            String currentDistro = new String(buffer).replaceAll(" ", "_").toUpperCase();
-            Properties mapping = new Properties();
-            in = Encoder.class.getResourceAsStream("/org/screenstudio/services/distros/Mapping.properties");
-            mapping.load(in);
-            in.close();
-            Enumeration list = mapping.propertyNames();
-            while (list.hasMoreElements()) {
-                String key = list.nextElement().toString();
-                if (currentDistro.startsWith(key.toUpperCase())) {
-                    //Loading specific xml configuration for current distro
-                    retValue = "/org/screenstudio/services/distros/" + mapping.getProperty(key);
-                    System.out.println("Using " + retValue + " for " + currentDistro);
-                    break;
+            File distroInfo = new File("/etc/issue");
+            if (distroInfo.exists()) {
+                //This is probably linux...
+                InputStream in = new File("/etc/issue").toURI().toURL().openStream();
+                byte[] buffer = new byte[in.available()];
+                in.read(buffer);
+                in.close();
+                String currentDistro = new String(buffer).replaceAll(" ", "_").toUpperCase();
+                Properties mapping = new Properties();
+                in = Encoder.class.getResourceAsStream("/org/screenstudio/services/distros/Mapping.properties");
+                mapping.load(in);
+                in.close();
+                Enumeration list = mapping.propertyNames();
+                while (list.hasMoreElements()) {
+                    String key = list.nextElement().toString();
+                    if (currentDistro.startsWith(key.toUpperCase())) {
+                        //Loading specific xml configuration for current distro
+                        retValue = "/org/screenstudio/services/distros/" + mapping.getProperty(key);
+                        System.out.println("Using " + retValue + " for " + currentDistro);
+                        break;
+                    }
+                }
+            } else {
+                // Trying for OSX...
+                String osName = System.getProperty("os.name").toLowerCase();
+                boolean isMacOs = osName.startsWith("mac os x");
+                if (isMacOs) {
+                    retValue = "/org/screenstudio/services/distros/osx.xml";
+                    System.out.println("OSX detected...");
                 }
             }
 
