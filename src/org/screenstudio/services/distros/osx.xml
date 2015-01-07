@@ -386,5 +386,58 @@ in the final command line.  Types supported are: "webcam" and "overlay"
                 <audio codec="aac" bitrate="128" channel="2" rate="44100"></audio>
             </profile>            
         </service>
+        <service name="Record to MOV" target="FILE">
+            <commands>
+                <command name="WEBCAM">
+                    @BINARYPATH/ffmpeg -f avfoundation -itsoffset @WEBCAMOFFSET  -i @WEBCAMDEV: -f image2  -i @BANNERSRC  -filter_complex [0:0][1:0]overlay=0:0 -f avfoundation -i :@PULSEDEV -r @OUTFPS -s @OUTWx@OUTH -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f mov @OUTSINK
+                </command>
+                <command name="WEBCAMDESKTOP">
+                    @BINARYPATH/ffmpeg -f avfoundation -itsoffset @WEBCAMOFFSET  -i @WEBCAMDEV: -f image2 -i @BANNERSRC -f avfoundation -r @DESKTOPFPS -i @SCREENDEV: -filter_complex [2:0][0:0]overlay=@WEBCAMLAYOUT[out];[out][1:0]overlay=0:0 -f avfoundation -i :@PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f mov @OUTSINK
+                </command>
+                <command name="DESKTOP">
+                    @BINARYPATH/ffmpeg -f image2 -i @BANNERSRC -f avfoundation -r @DESKTOPFPS -i @SCREENDEV: -filter_complex [1:0][0:0]overlay=0:0 -f avfoundation -i :@PULSEDEV -r @OUTFPS -s @OUTWx@OUTH  -ar @OUTAUDIORATE -vb @OUTVIDEORATEk -ab @OUTAUDIOBITRATEk -strict experimental -y -vcodec @VIDEOCODEC  -preset @PRESET -acodec @AUDIOCODEC -bufsize @BUFFERSIZEk -g @GROUP -f mov @OUTSINK
+                </command>
+                <layout type="webcam" location= "Lower Right" value="main_w-overlay_w:main_h-overlay_h"/>
+                <layout type="webcam" location= "Lower Left" value="0:main_h-overlay_h"/>
+                <layout type="webcam" location= "Top Right" value="main_w-overlay_w:0"/>
+                <layout type="webcam" location= "Top Left" value="0:0"/>
+                <layout type="webcam" location= "Center" value="main_w/2-overlay_w/2:main_h/2-overlay_h/2"/>
+            </commands>
+            <presets>
+                <preset>ultrafast</preset>
+                <preset>superfast</preset>
+                <preset>veryfast</preset>
+                <preset>faster</preset>
+                <preset>fast</preset>
+                <preset>medium</preset>
+                <preset>slow</preset>
+                <preset>slower</preset>
+                <preset>veryslow</preset>
+            </presets>
+            <profile name="Full Screen" buffersize="4096" muxer="mov" group="2" format="Fullscreen">
+                <video preset="ultrafast" codec="libx264" bitrate="15000"></video>
+                <audio codec="aac" bitrate="128" channel="2" rate="44100"></audio>
+            </profile>
+            <profile name="1080p" buffersize="4500" muxer="mov" group="2" format="1080p">
+                <video preset="ultrafast" codec="libx264" bitrate="15000"></video>
+                <audio codec="aac" bitrate="128" channel="2" rate="44100"></audio>
+            </profile>
+            <profile name="720p" buffersize="2000" muxer="mov" group="2" format="720p">
+                <video preset="ultrafast" codec="libx264" bitrate="9000"></video>
+                <audio codec="aac" bitrate="128" channel="2" rate="44100"></audio>
+            </profile>
+            <profile name="480p" buffersize="1200" muxer="flv" group="2" format="480p">
+                <video preset="ultrafast" codec="libx264" bitrate="4500"></video>
+                <audio codec="aac" bitrate="128" channel="2" rate="44100"></audio>
+            </profile>
+            <profile name="360p" buffersize="800" muxer="flv" group="2" format="360p">
+                <video preset="ultrafast" codec="libx264" bitrate="3000"></video>
+                <audio codec="aac" bitrate="128" channel="2" rate="44100"></audio>
+            </profile>
+            <profile name="240p" buffersize="500" muxer="flv" group="2" format="240p">
+                <video preset="ultrafast" codec="libx264" bitrate="1500"></video>
+                <audio codec="aac" bitrate="128" channel="2" rate="44100"></audio>
+            </profile>            
+        </service>
     </services>
 </root>
