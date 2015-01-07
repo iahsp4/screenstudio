@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.screenstudio.services.Command;
@@ -34,7 +35,7 @@ import org.screenstudio.services.Profile;
  */
 public class Screen {
 
-    private Rectangle size = new Rectangle(0,0);
+    private Rectangle size = new Rectangle(0, 0);
     private String id = "";
     private Webcam webcam = null;
     private Overlay overlay = null;
@@ -50,23 +51,26 @@ public class Screen {
         return getLabel();
     }
 
-    public static Screen[] getSources() {
-        java.util.ArrayList<Screen> list = new java.util.ArrayList<Screen>();
+    public static Screen[] getSources() throws IOException {
+        java.util.ArrayList<Screen> list = new java.util.ArrayList<>();
         System.out.println("Screen List:");
-        GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice[] devices = g.getScreenDevices();
-        int i = 1;
-        list.add(new Screen());
-        for (GraphicsDevice d : devices) {
-            System.out.println(d.getIDstring() + " " + d.getDefaultConfiguration().getBounds().toString().replaceAll("java.awt.Rectangle", ""));
-            Screen s = new Screen();
-            s.setId(d.getIDstring());
-            s.setScreenIndex(i++);
-            s.setSize(d.getDefaultConfiguration().getBounds());
-            list.add(s);
+        if (Screen.isOSX()) {
+            list = getOSXDevices();
+        } else {
+            GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice[] devices = g.getScreenDevices();
+            int i = 1;
+            list.add(new Screen());
+            for (GraphicsDevice d : devices) {
+                System.out.println(d.getIDstring() + " " + d.getDefaultConfiguration().getBounds().toString().replaceAll("java.awt.Rectangle", ""));
+                Screen s = new Screen();
+                s.setId(d.getIDstring());
+                s.setScreenIndex(i++);
+                s.setSize(d.getDefaultConfiguration().getBounds());
+                list.add(s);
+            }
         }
         return list.toArray(new Screen[list.size()]);
-
     }
 
     public static Rectangle captureWindowArea() throws IOException {
@@ -255,4 +259,66 @@ public class Screen {
             Logger.getLogger(Screen.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public static boolean isOSX() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        return osName.startsWith("mac os x");
+    }
+
+    private static ArrayList<Screen> getOSXDevices() throws IOException {
+        ArrayList<Screen> list = new ArrayList<>();
+        if (osx.FFMpegTools.checkForFFMPEG()) {
+            String command = osx.FFMpegTools.getBinaryPath() + "/ffmpeg -list_devices true -f avfoundation -i dummy";
+            String line = "";
+            System.out.println(command);
+            Process p = Runtime.getRuntime().exec(command);
+            InputStream in = p.getErrorStream();
+            InputStreamReader isr = new InputStreamReader(in);
+            BufferedReader reader = new BufferedReader(isr);
+            line = reader.readLine();
+            GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice[] devices = g.getScreenDevices();
+            while (line != null) {
+                if (line.endsWith("AVFoundation video devices:")) {
+                    // we have some audio sources
+                    line = reader.readLine();
+                    int index = 1;
+                    while (line != null && line.indexOf("input device") > 0 && !line.contains("audio devices")) {
+                        if (line.contains("Capture screen")) {
+                            Screen s = new Screen();
+                            if (index < devices.length){
+                                GraphicsDevice d = devices[index-1];
+                                s.setSize(d.getDefaultConfiguration().getBounds());
+                            } else {
+                                GraphicsDevice d = devices[0];
+                                s.setSize(d.getDefaultConfiguration().getBounds());
+                            }
+                            s.screenIndex = index;
+                            s.id = "";
+                            String[] parts = line.split(" ");
+                            System.out.println(line);
+                            for (int i = parts.length - 1; i >= 0; i--) {
+                                if (parts[i].startsWith("[")) {
+                                    // reached device id
+                                    s.id = parts[i].substring(1, parts[i].length() - 1);
+                                    break;
+                                }
+                            }
+                            System.out.println(s.getLabel());
+                            list.add(s);
+                        }
+                        line = reader.readLine();
+                    }
+                } else {
+                    line = reader.readLine();
+                }
+            }
+            reader.close();
+            isr.close();
+            in.close();
+            p.destroy();
+        }
+        return list;
+    }
+
 }
