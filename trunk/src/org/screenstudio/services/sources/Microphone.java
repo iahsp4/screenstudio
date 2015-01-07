@@ -38,7 +38,7 @@ public class Microphone {
         return getDescription();
     }
 
-    public static Microphone[] getSources() throws IOException {
+    public static Microphone[] getSources() throws IOException, InterruptedException {
         java.util.ArrayList<Microphone> list = new java.util.ArrayList<Microphone>();
         System.out.println("Source Audio List:");
         if (Screen.isOSX()) {
@@ -156,7 +156,7 @@ public class Microphone {
         return output;
     }
 
-    private static ArrayList<Microphone> getOSXDevices() throws IOException {
+    private static ArrayList<Microphone> getOSXDevices() throws IOException, InterruptedException {
         ArrayList<Microphone> list = new ArrayList<Microphone>();
         if (osx.FFMpegTools.checkForFFMPEG()) {
             String command = osx.FFMpegTools.getBinaryPath() + "/ffmpeg -list_devices true -f avfoundation -i dummy";
@@ -205,6 +205,8 @@ public class Microphone {
         try {
             getOSXDevices();
         } catch (IOException ex) {
+            Logger.getLogger(Microphone.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
             Logger.getLogger(Microphone.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

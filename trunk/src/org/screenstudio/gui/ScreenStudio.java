@@ -385,7 +385,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         }
     }
 
-    private void updateSources() throws IOException {
+    private void updateSources() throws IOException, InterruptedException {
         int selectedAudio = cboAudioSource.getSelectedIndex();
         int selectedMonitor = cboAudioMonitors.getSelectedIndex();
         int selectedWebcam = cbowebcamSource.getSelectedIndex();
@@ -1956,6 +1956,8 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         try {
             updateSources();
         } catch (IOException ex) {
+            Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
             Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_mnuRefreshSourcesActionPerformed

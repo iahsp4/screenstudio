@@ -31,7 +31,7 @@ public class FFMpegTools {
     
     
     
-    public static boolean checkForFFMPEG(){
+    public static boolean checkForFFMPEG() throws InterruptedException{
         File app = new File(System.getProperty("user.home"),"Applications");
         File ffmpeg = new File(app,"ffmpeg");
         boolean found = false;
@@ -49,6 +49,11 @@ public class FFMpegTools {
                 }
                 out.close();
                 in.close();
+                // Make it executable
+                Process p = Runtime.getRuntime().exec("chmod +x " + ffmpeg.getAbsolutePath());
+                p.waitFor();
+                p.destroy();
+                p = null;
                 found=true;
             } catch (IOException ex) {
                 Logger.getLogger(FFMpegTools.class.getName()).log(Level.SEVERE, null, ex);

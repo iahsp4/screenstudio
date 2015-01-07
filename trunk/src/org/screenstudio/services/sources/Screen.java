@@ -51,7 +51,7 @@ public class Screen {
         return getLabel();
     }
 
-    public static Screen[] getSources() throws IOException {
+    public static Screen[] getSources() throws IOException, InterruptedException {
         java.util.ArrayList<Screen> list = new java.util.ArrayList<Screen>();
         System.out.println("Screen List:");
         list.add(new Screen());
@@ -265,7 +265,7 @@ public class Screen {
         return osName.startsWith("mac os x");
     }
 
-    private static ArrayList<Screen> getOSXDevices() throws IOException {
+    private static ArrayList<Screen> getOSXDevices() throws IOException, InterruptedException {
         ArrayList<Screen> list = new ArrayList<Screen>();
         if (osx.FFMpegTools.checkForFFMPEG()) {
             String command = osx.FFMpegTools.getBinaryPath() + "/ffmpeg -list_devices true -f avfoundation -i dummy";
