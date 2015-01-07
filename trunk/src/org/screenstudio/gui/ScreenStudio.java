@@ -110,10 +110,11 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
 
         if (Screen.isOSX()) {
             mnuCaptureWindow.setVisible(false);
-            spinWebcamCaptureHeight.setVisible(false);
-            spinWebcamCaptureWidth.setVisible(false);
+            //spinWebcamCaptureHeight.setVisible(false);
+            //spinWebcamCaptureWidth.setVisible(false);
             mnuSetCaptureArea.setVisible(false);
             lblScreenDimenssion.setVisible(false);
+            //lblWebcamWidth.setVisible(false);
         }
         try {
             icon = javax.imageio.ImageIO.read(this.getClass().getResource("icon.png"));
