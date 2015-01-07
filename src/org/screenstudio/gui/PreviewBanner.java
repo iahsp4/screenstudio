@@ -70,6 +70,9 @@ public class PreviewBanner extends javax.swing.JDialog {
                 break;
             }
         }
+        if (dev == null){
+            dev = devices[0];
+        }
         BufferedImage capture = null;
         try {
             if (dev != null) {
