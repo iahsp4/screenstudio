@@ -54,13 +54,13 @@ public class Screen {
     public static Screen[] getSources() throws IOException {
         java.util.ArrayList<Screen> list = new java.util.ArrayList<>();
         System.out.println("Screen List:");
+        list.add(new Screen());
         if (Screen.isOSX()) {
-            list = getOSXDevices();
+            list.addAll(getOSXDevices());
         } else {
             GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice[] devices = g.getScreenDevices();
             int i = 1;
-            list.add(new Screen());
             for (GraphicsDevice d : devices) {
                 System.out.println(d.getIDstring() + " " + d.getDefaultConfiguration().getBounds().toString().replaceAll("java.awt.Rectangle", ""));
                 Screen s = new Screen();
