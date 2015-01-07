@@ -157,7 +157,7 @@ public class Microphone {
     }
 
     private static ArrayList<Microphone> getOSXDevices() throws IOException {
-        ArrayList<Microphone> list = new ArrayList<>();
+        ArrayList<Microphone> list = new ArrayList<Microphone>();
         if (osx.FFMpegTools.checkForFFMPEG()) {
             String command = osx.FFMpegTools.getBinaryPath() + "/ffmpeg -list_devices true -f avfoundation -i dummy";
             String line = "";

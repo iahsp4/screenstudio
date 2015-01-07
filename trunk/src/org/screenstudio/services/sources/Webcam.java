@@ -122,7 +122,7 @@ public class Webcam {
     }
 
     private static ArrayList<Webcam> getOSXDevices() throws IOException {
-        ArrayList<Webcam> list = new ArrayList<>();
+        ArrayList<Webcam> list = new ArrayList<Webcam>();
         if (osx.FFMpegTools.checkForFFMPEG()) {
             String command = osx.FFMpegTools.getBinaryPath() + "/ffmpeg -list_devices true -f avfoundation -i dummy";
             String line = "";
