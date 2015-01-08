@@ -115,6 +115,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             mnuSetCaptureArea.setVisible(false);
             lblScreenDimenssion.setVisible(false);
             //lblWebcamWidth.setVisible(false);
+            cboAudioMonitors.setVisible(false);
         }
         try {
             icon = javax.imageio.ImageIO.read(this.getClass().getResource("icon.png"));
@@ -794,7 +795,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         lblTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/screenstudio/gui/icon.png"))); // NOI18N
         lblTitle.setText("ScreenStudio");
         lblTitle.setToolTipText("Click to visit ScreenStudio Homepage");
-        lblTitle.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblTitle.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lblTitle.setIconTextGap(6);
         lblTitle.setName("lblTitle"); // NOI18N
         lblTitle.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -928,7 +929,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         tglStreamToServer.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         tglStreamToServer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/screenstudio/gui/iconPlay.png"))); // NOI18N
         tglStreamToServer.setToolTipText("Stream!");
-        tglStreamToServer.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        tglStreamToServer.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         tglStreamToServer.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/screenstudio/gui/iconStarting.png"))); // NOI18N
         tglStreamToServer.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/screenstudio/gui/iconRunning.png"))); // NOI18N
         tglStreamToServer.addActionListener(new java.awt.event.ActionListener() {
@@ -1060,7 +1061,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         lblScreenDimenssion.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
         lblScreenDimenssion.setForeground(java.awt.SystemColor.controlShadow);
         lblScreenDimenssion.setText("Screen Size...");
-        lblScreenDimenssion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblScreenDimenssion.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lblScreenDimenssion.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lblScreenDimenssionMouseClicked(evt);
@@ -1416,7 +1417,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(12, 12, 12)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator1)
                     .addGroup(layout.createSequentialGroup()
@@ -1439,7 +1440,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(12, 12, 12)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblTitle)
                     .addGroup(layout.createSequentialGroup()
