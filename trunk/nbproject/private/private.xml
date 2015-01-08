@@ -15,17 +15,19 @@
             </bookmark>
             <bookmark id="1">
                 <name/>
-                <line>202</line>
+                <line>208</line>
                 <key/>
             </bookmark>
             <bookmark id="2">
                 <name/>
-                <line>226</line>
+                <line>232</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/Users/patrickballeux/NetBeansProjects/ScreenStudio/trunk/src/org/screenstudio/gui/ScreenStudio.java</file>
+        </group>
     </open-files>
 </project-private>
