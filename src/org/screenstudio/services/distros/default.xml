@@ -533,7 +533,7 @@ in the final command line.  Types supported are: "webcam" and "overlay"
                 <video preset="ultrafast" codec="libx264" bitrate="15000"></video>
                 <audio codec="mp3" bitrate="128" channel="2" rate="44100"></audio>
             </profile>
-            <profile name="720p" buffersize="2000" muxer="mpv" group="2" format="720p">
+            <profile name="720p" buffersize="2000" muxer="mov" group="2" format="720p">
                 <video preset="ultrafast" codec="libx264" bitrate="9000"></video>
                 <audio codec="mp3" bitrate="128" channel="2" rate="44100"></audio>
             </profile>
