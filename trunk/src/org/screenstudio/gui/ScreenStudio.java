@@ -1607,7 +1607,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         }
     }//GEN-LAST:event_cboRecordServicesItemStateChanged
 
-    private Screen configureScreenRecorder(Encoder enc) throws IOException {
+    private Screen configureScreenRecorder(Encoder enc) throws IOException, Exception {
         Screen s = null;
         if (enc != null) {
             s = (Screen) cboScreen.getSelectedItem();
@@ -1631,10 +1631,12 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             }
             if (cboScreen.getSelectedIndex() > 0) {
                 currentRenderer = new HTMLRenderer((int) s.getSize().getWidth(), (int) s.getSize().getHeight(), halign, valign);
-            } else {
+            } else if (cbowebcamSource.getSelectedIndex() > 0){
                 //No screen, just the webcam is selected...
                 s.setSize(new Rectangle((Integer) spinWebcamCaptureWidth.getValue(), (Integer) spinWebcamCaptureHeight.getValue()));
                 currentRenderer = new HTMLRenderer((Integer) spinWebcamCaptureWidth.getValue(), (Integer) spinWebcamCaptureHeight.getValue(), halign, valign);
+            } else {
+                throw new Exception ("No video source selected.  Aborting!!!");
             }
             File currentBanner;
             URL url = isURL(overlayEditor.getTextPane().getText());
