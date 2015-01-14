@@ -54,7 +54,9 @@ public class Screen {
     public static Screen[] getSources() throws IOException, InterruptedException {
         java.util.ArrayList<Screen> list = new java.util.ArrayList<Screen>();
         System.out.println("Screen List:");
-        list.add(new Screen());
+        if (!Screen.isOSX()){
+            list.add(new Screen());
+        }
         if (Screen.isOSX()) {
             list.addAll(getOSXDevices());
         } else {
