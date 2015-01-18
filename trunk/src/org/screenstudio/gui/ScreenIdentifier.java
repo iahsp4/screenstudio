@@ -63,6 +63,11 @@ public class ScreenIdentifier extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
+        setEnabled(false);
+        setFocusCycleRoot(false);
+        setFocusTraversalKeysEnabled(false);
+        setFocusable(false);
+        setFocusableWindowState(false);
         setUndecorated(true);
         setResizable(false);
 

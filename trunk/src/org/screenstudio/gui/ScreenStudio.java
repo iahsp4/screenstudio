@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 package org.screenstudio.gui;
 
+import com.apple.eawt.Application;
 import com.hexidec.ekit.EkitCore;
 import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.HotKeyListener;
@@ -53,6 +54,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
+import java.util.prefs.InvalidPreferencesFormatException;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -106,7 +108,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
      */
     public ScreenStudio() {
         initComponents();
-        this.setTitle("ScreenStudio 1.5.0");
+        this.setTitle(Version.version);
 
         if (Screen.isOSX()) {
             mnuCaptureWindow.setVisible(false);
@@ -143,6 +145,46 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             txtStatus.setText("Some dependencies maybe missing... Have a look at Options/System Check!");
         }
         pack();
+    }
+
+    private void exportSettings() throws FileNotFoundException, IOException, BackingStoreException {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(chooser.getFileSystemView().getDefaultDirectory());
+        chooser.setDialogTitle("ScreenStudio: Export Settings...");
+        chooser.setFileFilter(new FileNameExtensionFilter("ScreenStudio Settings", "sstudio", "sstudio"));
+        chooser.showSaveDialog(this);
+
+        if (chooser.getSelectedFile() != null) {
+            File exportFile = chooser.getSelectedFile();
+            if (!exportFile.getName().endsWith(".sstudio")) {
+                exportFile = new File(exportFile.getAbsolutePath() + ".sstudio");
+            }
+            savePreferences();
+            java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userRoot().node(this.getClass().getSimpleName());
+            FileOutputStream out = new FileOutputStream(exportFile);
+            prefs.exportSubtree(out);
+            out.close();
+            prefs = null;
+
+        }
+    }
+
+    private void importSettings() throws MalformedURLException, IOException, InvalidPreferencesFormatException {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(chooser.getFileSystemView().getDefaultDirectory());
+        chooser.setDialogTitle("ScreenStudio: Import Settings...");
+        chooser.setFileFilter(new FileNameExtensionFilter("ScreenStudio Settings", "sstudio", "sstudio"));
+        chooser.showOpenDialog(this);
+
+        if (chooser.getSelectedFile() != null) {
+            File importFile = chooser.getSelectedFile();
+
+            InputStream in = importFile.toURI().toURL().openStream();
+            java.util.prefs.Preferences.importPreferences(in);
+            in.close();
+            loadPreferences(false);
+        }
+
     }
 
     private void savePreferences() {
@@ -397,7 +439,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         cboAudioSource.setModel(new DefaultComboBoxModel());
         cboAudioMonitors.setModel(new DefaultComboBoxModel());
 
-        if (!Screen.isOSX()){
+        if (!Screen.isOSX()) {
             cboAudioSource.addItem(new Microphone());
         }
         cboAudioMonitors.addItem(new Microphone());
@@ -734,10 +776,13 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         lblOverlayLayout = new javax.swing.JLabel();
         cboOverlayLayout = new javax.swing.JComboBox();
         panOverlayEditor = new javax.swing.JPanel();
-        lblMadeFor = new javax.swing.JLabel();
+        panOverlayTools = new javax.swing.JPanel();
         btnPreview = new javax.swing.JButton();
+        lblMadeFor = new javax.swing.JLabel();
         mnuBar = new javax.swing.JMenuBar();
         mnuFile = new javax.swing.JMenu();
+        mnuImportSettings = new javax.swing.JMenuItem();
+        mnuExportSettings = new javax.swing.JMenuItem();
         mnuOpen = new javax.swing.JMenuItem();
         mnuChkRemoteWebServer = new javax.swing.JCheckBoxMenuItem();
         mnuSetCaptureArea = new javax.swing.JMenuItem();
@@ -791,6 +836,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         trayMenu.add(mnuExit);
 
         setBackground(java.awt.Color.lightGray);
+        setPreferredSize(new java.awt.Dimension(850, 500));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -876,7 +922,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                             .addComponent(lblRecordPresets, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(4, 4, 4)
                         .addGroup(panRecordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cboRecordServices, 0, 428, Short.MAX_VALUE)
+                            .addComponent(cboRecordServices, 0, 468, Short.MAX_VALUE)
                             .addComponent(cboRecordProfile, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cboRecordPresets, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
@@ -903,7 +949,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                             .addComponent(cboRecordPresets, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblRecordTargetRecordingFile)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
                         .addComponent(lblRemoteRecordMessage)))
                 .addContainerGap())
         );
@@ -975,7 +1021,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                                 .addComponent(lblStreamPresets, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(4, 4, 4)
                                 .addComponent(cboStreamPresets, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 175, Short.MAX_VALUE))
+                                .addGap(0, 217, Short.MAX_VALUE))
                             .addComponent(lblRemoteRTMPMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tglStreamToServer)))
@@ -1096,54 +1142,52 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             .addGroup(panSourcesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator3)
                     .addComponent(jSeparator2)
                     .addGroup(panSourcesLayout.createSequentialGroup()
-                        .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblWebcam, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblDelay, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(3, 3, 3)
-                        .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panSourcesLayout.createSequentialGroup()
-                                .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(spinWebcamOffset)
-                                    .addComponent(spinWebcamCaptureWidth, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(2, 2, 2)
-                                .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(panSourcesLayout.createSequentialGroup()
-                                        .addComponent(lblDelay1)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(lblWarningWebcamOSX))
-                                    .addGroup(panSourcesLayout.createSequentialGroup()
-                                        .addComponent(lblWebcamWidth)
-                                        .addGap(4, 4, 4)
-                                        .addComponent(spinWebcamCaptureHeight, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(lblWebcamLayout)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(cboWebcamLayout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(cbowebcamSource, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jSeparator3)
-                    .addGroup(panSourcesLayout.createSequentialGroup()
-                        .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panSourcesLayout.createSequentialGroup()
-                                .addComponent(lblScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(4, 4, 4)
-                                .addComponent(cboScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spinFPS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblFrameRate)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(lblScreenDimenssion))
-                            .addComponent(lblScreen2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(panSourcesLayout.createSequentialGroup()
-                        .addComponent(lblAudioSource, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(4, 4, 4)
-                        .addComponent(cboAudioSource, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblAudioSource, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboAudioMonitors, 0, 176, Short.MAX_VALUE)))
+                        .addComponent(cboAudioSource, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(cboAudioMonitors, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(panSourcesLayout.createSequentialGroup()
+                            .addComponent(lblScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(4, 4, 4)
+                            .addComponent(cboScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(spinFPS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(lblFrameRate)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(lblScreenDimenssion))
+                        .addGroup(panSourcesLayout.createSequentialGroup()
+                            .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(lblDelay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblScreen2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblWebcam, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(cbowebcamSource, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(panSourcesLayout.createSequentialGroup()
+                                    .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(panSourcesLayout.createSequentialGroup()
+                                            .addComponent(spinWebcamCaptureWidth, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(lblWebcamWidth)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(spinWebcamCaptureHeight, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(lblWebcamLayout)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(cboWebcamLayout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(panSourcesLayout.createSequentialGroup()
+                                            .addComponent(spinWebcamOffset, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(lblDelay1)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(lblWarningWebcamOSX)))
+                                    .addGap(0, 56, Short.MAX_VALUE))))))
                 .addContainerGap())
         );
         panSourcesLayout.setVerticalGroup(
@@ -1158,21 +1202,19 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                     .addComponent(lblScreenDimenssion))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblWebcam)
                     .addComponent(cbowebcamSource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblWebcamLayout)
-                        .addComponent(cboWebcamLayout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblScreen2)
-                        .addComponent(spinWebcamCaptureWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblWebcamWidth)
-                        .addComponent(spinWebcamCaptureHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblScreen2)
+                    .addComponent(spinWebcamCaptureWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblWebcamWidth)
+                    .addComponent(spinWebcamCaptureHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblWebcamLayout)
+                    .addComponent(cboWebcamLayout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblDelay)
                     .addComponent(spinWebcamOffset, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1180,12 +1222,12 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                     .addComponent(lblWarningWebcamOSX))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblAudioSource)
                     .addComponent(cboAudioSource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cboAudioMonitors, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(49, 49, 49))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabs.addTab(bundle.getString("TAB_SOURCES"), panSources); // NOI18N
@@ -1270,7 +1312,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                                     .addComponent(chkOptionStreamShift)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(txtOptionStreamKey))))
-                        .addGap(0, 184, Short.MAX_VALUE)))
+                        .addGap(0, 224, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         panOptionsLayout.setVerticalGroup(
@@ -1294,7 +1336,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                 .addGroup(panOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblOverlayLayout)
                     .addComponent(cboOverlayLayout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
                 .addComponent(btnOptionsApply)
                 .addContainerGap())
         );
@@ -1302,11 +1344,6 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         tabs.addTab(bundle.getString("OPTIONS"), panOptions); // NOI18N
 
         panOverlayEditor.setLayout(new java.awt.BorderLayout());
-        tabs.addTab("Overlay", panOverlayEditor);
-
-        lblMadeFor.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
-        lblMadeFor.setForeground(new java.awt.Color(164, 164, 164));
-        lblMadeFor.setText("by Patrick Balleux");
 
         btnPreview.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/screenstudio/gui/iconPreview.png"))); // NOI18N
         btnPreview.setToolTipText("Preview banner location");
@@ -1315,11 +1352,38 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                 btnPreviewActionPerformed(evt);
             }
         });
+        panOverlayTools.add(btnPreview);
+
+        panOverlayEditor.add(panOverlayTools, java.awt.BorderLayout.EAST);
+
+        tabs.addTab("Overlay", panOverlayEditor);
+
+        lblMadeFor.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        lblMadeFor.setForeground(new java.awt.Color(164, 164, 164));
+        lblMadeFor.setText("by Patrick Balleux");
 
         mnuBar.setFont(new java.awt.Font("Ubuntu", 0, 8)); // NOI18N
 
         mnuFile.setText(bundle.getString("OPTIONS")); // NOI18N
         mnuFile.setFont(new java.awt.Font("Ubuntu", 0, 8)); // NOI18N
+
+        mnuImportSettings.setText(bundle.getString("IMPORT_SETTINGS")); // NOI18N
+        mnuImportSettings.setToolTipText("Import settings from a .sstudio file");
+        mnuImportSettings.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuImportSettingsActionPerformed(evt);
+            }
+        });
+        mnuFile.add(mnuImportSettings);
+
+        mnuExportSettings.setText(bundle.getString("EXPORT_SETTINGS")); // NOI18N
+        mnuExportSettings.setToolTipText("Export current settings into a .sstudio file");
+        mnuExportSettings.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuExportSettingsActionPerformed(evt);
+            }
+        });
+        mnuFile.add(mnuExportSettings);
 
         mnuOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         mnuOpen.setText(bundle.getString("OPENCUSTOMXML")); // NOI18N
@@ -1441,10 +1505,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                                     .addComponent(lblMadeFor, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(lblMadeBY, javax.swing.GroupLayout.Alignment.TRAILING)))
                             .addComponent(tabs)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtStatus)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnPreview)))
+                            .addComponent(txtStatus))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -1460,11 +1521,9 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                 .addGap(2, 2, 2)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabs, javax.swing.GroupLayout.PREFERRED_SIZE, 280, Short.MAX_VALUE)
+                .addComponent(tabs)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnPreview, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -1631,12 +1690,12 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             }
             if (cboScreen.getSelectedIndex() > 0) {
                 currentRenderer = new HTMLRenderer((int) s.getSize().getWidth(), (int) s.getSize().getHeight(), halign, valign);
-            } else if (cbowebcamSource.getSelectedIndex() > 0){
+            } else if (cbowebcamSource.getSelectedIndex() > 0) {
                 //No screen, just the webcam is selected...
                 s.setSize(new Rectangle((Integer) spinWebcamCaptureWidth.getValue(), (Integer) spinWebcamCaptureHeight.getValue()));
                 currentRenderer = new HTMLRenderer((Integer) spinWebcamCaptureWidth.getValue(), (Integer) spinWebcamCaptureHeight.getValue(), halign, valign);
             } else {
-                throw new Exception ("No video source selected.  Aborting!!!");
+                throw new Exception("No video source selected.  Aborting!!!");
             }
             File currentBanner;
             URL url = isURL(overlayEditor.getTextPane().getText());
@@ -1975,6 +2034,30 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         }
     }//GEN-LAST:event_mnuRefreshSourcesActionPerformed
 
+    private void mnuImportSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuImportSettingsActionPerformed
+        try {
+            importSettings();
+        } catch (IOException ex) {
+            txtStatus.setText("An error has occured... " + ex.getMessage());
+            Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidPreferencesFormatException ex) {
+            txtStatus.setText("An error has occured... " + ex.getMessage());
+            Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mnuImportSettingsActionPerformed
+
+    private void mnuExportSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExportSettingsActionPerformed
+        try {
+            exportSettings();
+        } catch (IOException ex) {
+            txtStatus.setText("An error has occured... " + ex.getMessage());
+            Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BackingStoreException ex) {
+            txtStatus.setText("An error has occured... " + ex.getMessage());
+            Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mnuExportSettingsActionPerformed
+
     private void setCaptureArea() {
         CaptureScreenSize capture = new CaptureScreenSize(this, true);
         Screen s = (Screen) cboScreen.getSelectedItem();
@@ -2028,6 +2111,11 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 ScreenStudio s = new ScreenStudio();
+                try {
+                    s.setIconImage(javax.imageio.ImageIO.read(this.getClass().getResource("icon.png")));
+                } catch (IOException ex) {
+                    Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 s.setVisible(true);
             }
         });
@@ -2093,9 +2181,11 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private javax.swing.JMenuItem mnuCaptureWindow;
     private javax.swing.JCheckBoxMenuItem mnuChkRemoteWebServer;
     private java.awt.MenuItem mnuExit;
+    private javax.swing.JMenuItem mnuExportSettings;
     private javax.swing.JMenuItem mnuExportXMLToFile;
     private javax.swing.JMenu mnuFile;
     private javax.swing.JMenuItem mnuIdentifyScreen;
+    private javax.swing.JMenuItem mnuImportSettings;
     private javax.swing.JMenuItem mnuOpen;
     private java.awt.CheckboxMenuItem mnuRecord;
     private javax.swing.JMenuItem mnuRefreshSources;
@@ -2107,6 +2197,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private javax.swing.JMenuItem mnuSystemCheck;
     private javax.swing.JPanel panOptions;
     private javax.swing.JPanel panOverlayEditor;
+    private javax.swing.JPanel panOverlayTools;
     private javax.swing.JPanel panRecord;
     private javax.swing.JPanel panSources;
     private javax.swing.JPanel panStream;
