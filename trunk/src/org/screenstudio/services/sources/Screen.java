@@ -267,57 +267,56 @@ public class Screen {
 
     private static ArrayList<Screen> getOSXDevices() throws IOException, InterruptedException {
         ArrayList<Screen> list = new ArrayList<Screen>();
-        if (osx.FFMpegTools.checkForFFMPEG()) {
-            String command = osx.FFMpegTools.getBinaryPath() + "/ffmpeg -list_devices true -f avfoundation -i dummy";
-            String line = "";
-            System.out.println(command);
-            Process p = Runtime.getRuntime().exec(command);
-            InputStream in = p.getErrorStream();
-            InputStreamReader isr = new InputStreamReader(in);
-            BufferedReader reader = new BufferedReader(isr);
-            line = reader.readLine();
-            GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            GraphicsDevice[] devices = g.getScreenDevices();
-            while (line != null) {
-                if (line.endsWith("AVFoundation video devices:")) {
-                    // we have some audio sources
-                    line = reader.readLine();
-                    int index = 1;
-                    while (line != null && line.indexOf("input device") > 0 && !line.contains("audio devices")) {
-                        if (line.contains("Capture screen")) {
-                            Screen s = new Screen();
-                            if (index < devices.length){
-                                GraphicsDevice d = devices[index-1];
-                                s.setSize(d.getDefaultConfiguration().getBounds());
-                            } else {
-                                GraphicsDevice d = devices[0];
-                                s.setSize(d.getDefaultConfiguration().getBounds());
-                            }
-                            s.screenIndex = index;
-                            s.id = "";
-                            String[] parts = line.split(" ");
-                            System.out.println(line);
-                            for (int i = parts.length - 1; i >= 0; i--) {
-                                if (parts[i].startsWith("[")) {
-                                    // reached device id
-                                    s.id = parts[i].substring(1, parts[i].length() - 1);
-                                    break;
-                                }
-                            }
-                            System.out.println(s.getLabel());
-                            list.add(s);
+        String command = "./ffmpeg -list_devices true -f avfoundation -i dummy";
+        String line = "";
+        System.out.println(command);
+        Process p = Runtime.getRuntime().exec(command);
+        InputStream in = p.getErrorStream();
+        InputStreamReader isr = new InputStreamReader(in);
+        BufferedReader reader = new BufferedReader(isr);
+        line = reader.readLine();
+        GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] devices = g.getScreenDevices();
+        while (line != null) {
+            if (line.endsWith("AVFoundation video devices:")) {
+                // we have some audio sources
+                line = reader.readLine();
+                int index = 1;
+                while (line != null && line.indexOf("input device") > 0 && !line.contains("audio devices")) {
+                    if (line.contains("Capture screen")) {
+                        Screen s = new Screen();
+                        if (index < devices.length) {
+                            GraphicsDevice d = devices[index - 1];
+                            s.setSize(d.getDefaultConfiguration().getBounds());
+                        } else {
+                            GraphicsDevice d = devices[0];
+                            s.setSize(d.getDefaultConfiguration().getBounds());
                         }
-                        line = reader.readLine();
+                        s.screenIndex = index;
+                        s.id = "";
+                        String[] parts = line.split(" ");
+                        System.out.println(line);
+                        for (int i = parts.length - 1; i >= 0; i--) {
+                            if (parts[i].startsWith("[")) {
+                                // reached device id
+                                s.id = parts[i].substring(1, parts[i].length() - 1);
+                                break;
+                            }
+                        }
+                        System.out.println(s.getLabel());
+                        list.add(s);
                     }
-                } else {
                     line = reader.readLine();
                 }
+            } else {
+                line = reader.readLine();
             }
-            reader.close();
-            isr.close();
-            in.close();
-            p.destroy();
         }
+        reader.close();
+        isr.close();
+        in.close();
+        p.destroy();
+
         return list;
     }
 

@@ -21,5 +21,5 @@ package org.screenstudio.gui;
  * @author patrickballeux
  */
 public class Version {
-    public static String version = "ScreenStudio 1.5.1";
+    public static String version = "ScreenStudio 1.5.2";
 }

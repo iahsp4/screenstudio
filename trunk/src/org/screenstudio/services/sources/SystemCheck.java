@@ -31,16 +31,7 @@ public class SystemCheck {
     public static boolean isSystemReady(boolean interactive) {
         ArrayList<String> msgs = new ArrayList<String>();
         if (Screen.isOSX()) {
-            try {
-                if (!osx.FFMpegTools.checkForFFMPEG()) {
-                    msgs.add("----");
-                    msgs.add("OSX detected but could not locate FFMPEG");
-                    msgs.add("ScreenStudio has tried failed to deploy FFMPEG in [HOME]/Applications folder...");
-                    msgs.add("----");
-                }
-            } catch (InterruptedException ex) {
-                Logger.getLogger(SystemCheck.class.getName()).log(Level.SEVERE, null, ex);
-            }
+// do nothing...
         } else {
             //Looks for avconv or ffmpeg
             if (!new File("/usr/bin/avconv").exists() && !new File("/usr/bin/ffmpeg").exists()) {

@@ -44,4 +44,6 @@ if [[ "$_java" ]]; then
 fi
 
 # Run the application
-exec $_java $VM_ARGS -Dapple.laf.useScreenMenuBar=true -Dcom.apple.macos.use-file-dialog-packages=true -Xdock:name="$APP_NAME" -Xdock:icon="$DIR/../Resources/logo.png" -cp ".;$DIR;" -jar "$DIR/$APP_JAR"
+chmod +x ./ffmpeg
+cd $DIR
+exec $_java $VM_ARGS -Dapple.laf.useScreenMenuBar=true -Dcom.apple.macos.use-file-dialog-packages=true -Xdock:name="$APP_NAME" -Xdock:icon="$DIR/../Resources/logo.png" -cp ".;$DIR;" -jar ScreenStudio.jar
