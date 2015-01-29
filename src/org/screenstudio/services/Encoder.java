@@ -73,11 +73,7 @@ public class Encoder {
 
     private static String parseGeneric(Screen s, File videoFolder) throws IOException, InterruptedException {
         String command = s.getCommand().getCommandLine();
-        if (command.contains("@BINARYPATH")){
-            if (Screen.isOSX()){
-                command = command.replaceAll("@BINARYPATH", osx.FFMpegTools.getBinaryPath());
-            }
-        }
+        
         if (command.contains("@SCREENDEV")){
             command = command.replaceAll("@SCREENDEV", s.getId());
         }

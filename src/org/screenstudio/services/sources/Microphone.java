@@ -158,46 +158,45 @@ public class Microphone {
 
     private static ArrayList<Microphone> getOSXDevices() throws IOException, InterruptedException {
         ArrayList<Microphone> list = new ArrayList<Microphone>();
-        if (osx.FFMpegTools.checkForFFMPEG()) {
-            String command = osx.FFMpegTools.getBinaryPath() + "/ffmpeg -list_devices true -f avfoundation -i dummy";
-            String line = "";
-            System.out.println(command);
-            Process p = Runtime.getRuntime().exec(command);
-            InputStream in = p.getErrorStream();
-            InputStreamReader isr = new InputStreamReader(in);
-            BufferedReader reader = new BufferedReader(isr);
-            line = reader.readLine();
-            while (line != null) {
-                if (line.endsWith("AVFoundation audio devices:")){
-                    // we have some audio sources
-                    line = reader.readLine();
-                    while (line != null && line.indexOf("input device") > 0){
-                        Microphone m = new Microphone();
-                        System.out.println(line);
-                        m.description = "";
-                        String[] parts = line.split(" ");
-                        for (int i = parts.length-1;i>=0;i--){
-                            if (parts[i].startsWith("[")){
-                                // reached device id
-                                m.device = parts[i].substring(1,parts[i].length()-1);
-                                break;
-                            } else {
-                                m.description = parts[i] + " " + m.description;
-                            }
+        String command = "./ffmpeg -list_devices true -f avfoundation -i dummy";
+        String line = "";
+        System.out.println(command);
+        Process p = Runtime.getRuntime().exec(command);
+        InputStream in = p.getErrorStream();
+        InputStreamReader isr = new InputStreamReader(in);
+        BufferedReader reader = new BufferedReader(isr);
+        line = reader.readLine();
+        while (line != null) {
+            if (line.endsWith("AVFoundation audio devices:")) {
+                // we have some audio sources
+                line = reader.readLine();
+                while (line != null && line.indexOf("input device") > 0) {
+                    Microphone m = new Microphone();
+                    System.out.println(line);
+                    m.description = "";
+                    String[] parts = line.split(" ");
+                    for (int i = parts.length - 1; i >= 0; i--) {
+                        if (parts[i].startsWith("[")) {
+                            // reached device id
+                            m.device = parts[i].substring(1, parts[i].length() - 1);
+                            break;
+                        } else {
+                            m.description = parts[i] + " " + m.description;
                         }
-                        m.description = m.description.trim();
-                        list.add(m);
-                        line = reader.readLine();
                     }
-                } else {
+                    m.description = m.description.trim();
+                    list.add(m);
                     line = reader.readLine();
                 }
+            } else {
+                line = reader.readLine();
             }
-            reader.close();
-            isr.close();
-            in.close();
-            p.destroy();
         }
+        reader.close();
+        isr.close();
+        in.close();
+        p.destroy();
+
         return list;
     }
 
