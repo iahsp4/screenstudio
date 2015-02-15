@@ -72,6 +72,26 @@
             </Property>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="mnuImportSettings">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="org/screenstudio/gui/lang/languages.properties" key="IMPORT_SETTINGS" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuImportSettingsActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="mnuExportSettings">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="org/screenstudio/gui/lang/languages.properties" key="EXPORT_SETTINGS" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuExportSettingsActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="mnuChkRemoteWebServer">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
@@ -282,7 +302,7 @@
         <Property name="text" type="java.lang.String" value="ScreenStudio"/>
         <Property name="toolTipText" type="java.lang.String" value="Click to visit ScreenStudio Homepage"/>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-          <Color id="Default Cursor"/>
+          <Color id="Curseur par d&#xe9;faut"/>
         </Property>
         <Property name="iconTextGap" type="int" value="6"/>
         <Property name="name" type="java.lang.String" value="lblTitle" noResource="true"/>
@@ -674,7 +694,7 @@
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Stream!"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-                  <Color id="Default Cursor"/>
+                  <Color id="Curseur par d&#xe9;faut"/>
                 </Property>
                 <Property name="pressedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/org/screenstudio/gui/iconStarting.png"/>
@@ -981,7 +1001,7 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Screen Size..."/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-                  <Color id="Default Cursor"/>
+                  <Color id="Curseur par d&#xe9;faut"/>
                 </Property>
               </Properties>
               <Events>
