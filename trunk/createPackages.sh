@@ -7,7 +7,7 @@ sed "s/version = \x22.*\x22/version = \x22ScreenStudio $VERSION\x22/g" src/org/s
 rm src/org/screenstudio/gui/Version.java
 mv src/org/screenstudio/gui/VersionNEW.java src/org/screenstudio/gui/Version.java
 echo "Building Binaries"
-ant -f . -Dnb.internal.action.name=rebuild clean jar
+ant -f /home/patrick/SVN/ScreenStudio/screenstudio -Dnb.internal.action.name="rebuild clean jar"
 
 echo "Cleaning up files..."
 rm ScreenStudio.Ubuntu/*~
