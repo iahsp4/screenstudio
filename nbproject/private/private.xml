@@ -5,31 +5,27 @@
             <url>src/org/screenstudio/gui/ScreenStudio.java</url>
             <bookmark id="3">
                 <name/>
-                <line>77</line>
+                <line>76</line>
                 <key/>
             </bookmark>
             <bookmark id="5">
                 <name/>
-                <line>96</line>
+                <line>95</line>
                 <key/>
             </bookmark>
             <bookmark id="1">
                 <name/>
-                <line>209</line>
+                <line>208</line>
                 <key/>
             </bookmark>
             <bookmark id="2">
                 <name/>
-                <line>233</line>
+                <line>232</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/home/patrick/SVN/ScreenStudio/screenstudio/src/org/screenstudio/services/distros/osx.xml</file>
-            <file>file:/home/patrick/SVN/ScreenStudio/screenstudio/src/org/screenstudio/gui/ScreenStudio.java</file>
-            <file>file:/home/patrick/SVN/ScreenStudio/screenstudio/src/org/screenstudio/services/distros/default.xml</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
