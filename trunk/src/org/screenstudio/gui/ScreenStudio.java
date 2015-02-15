@@ -142,6 +142,45 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         }
         pack();
     }
+    private void exportSettings() throws FileNotFoundException, IOException, BackingStoreException {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(chooser.getFileSystemView().getDefaultDirectory());
+        chooser.setDialogTitle("ScreenStudio: Export Settings...");
+        chooser.setFileFilter(new FileNameExtensionFilter("ScreenStudio Settings", "sstudio", "sstudio"));
+        chooser.showSaveDialog(this);
+
+        if (chooser.getSelectedFile() != null) {
+            File exportFile = chooser.getSelectedFile();
+            if (!exportFile.getName().endsWith(".sstudio")) {
+                exportFile = new File(exportFile.getAbsolutePath() + ".sstudio");
+            }
+            savePreferences();
+            java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userRoot().node(this.getClass().getSimpleName());
+            FileOutputStream out = new FileOutputStream(exportFile);
+            prefs.exportSubtree(out);
+            out.close();
+            prefs = null;
+
+        }
+    }
+
+    private void importSettings() throws MalformedURLException, IOException, InvalidPreferencesFormatException {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(chooser.getFileSystemView().getDefaultDirectory());
+        chooser.setDialogTitle("ScreenStudio: Import Settings...");
+        chooser.setFileFilter(new FileNameExtensionFilter("ScreenStudio Settings", "sstudio", "sstudio"));
+        chooser.showOpenDialog(this);
+
+        if (chooser.getSelectedFile() != null) {
+            File importFile = chooser.getSelectedFile();
+
+            InputStream in = importFile.toURI().toURL().openStream();
+            java.util.prefs.Preferences.importPreferences(in);
+            in.close();
+            loadPreferences(false);
+        }
+
+    }
 
     private void savePreferences() {
         try {
@@ -722,6 +761,8 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         lblMadeFor = new javax.swing.JLabel();
         mnuBar = new javax.swing.JMenuBar();
         mnuFile = new javax.swing.JMenu();
+        mnuImportSettings = new javax.swing.JMenuItem();
+        mnuExportSettings = new javax.swing.JMenuItem();
         mnuChkRemoteWebServer = new javax.swing.JCheckBoxMenuItem();
         mnuSetCaptureArea = new javax.swing.JMenuItem();
         mnuCaptureWindow = new javax.swing.JMenuItem();
@@ -1302,6 +1343,22 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
 
         mnuFile.setText(bundle.getString("OPTIONS")); // NOI18N
         mnuFile.setFont(new java.awt.Font("Ubuntu", 0, 8)); // NOI18N
+
+        mnuImportSettings.setText(bundle.getString("IMPORT_SETTINGS")); // NOI18N
+        mnuImportSettings.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuImportSettingsActionPerformed(evt);
+            }
+        });
+        mnuFile.add(mnuImportSettings);
+
+        mnuExportSettings.setText(bundle.getString("EXPORT_SETTINGS")); // NOI18N
+        mnuExportSettings.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuExportSettingsActionPerformed(evt);
+            }
+        });
+        mnuFile.add(mnuExportSettings);
 
         mnuChkRemoteWebServer.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
         mnuChkRemoteWebServer.setText(bundle.getString("REMOTECONTROL")); // NOI18N
@@ -1896,6 +1953,26 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         }
     }//GEN-LAST:event_mnuRefreshSourcesActionPerformed
 
+    private void mnuImportSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuImportSettingsActionPerformed
+        try {
+            importSettings();
+        } catch (IOException ex) {
+            Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidPreferencesFormatException ex) {
+            Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mnuImportSettingsActionPerformed
+
+    private void mnuExportSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExportSettingsActionPerformed
+        try {
+            exportSettings();
+        } catch (IOException ex) {
+            Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BackingStoreException ex) {
+            Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mnuExportSettingsActionPerformed
+
     private void setCaptureArea() {
         CaptureScreenSize capture = new CaptureScreenSize(this, true);
         Screen s = (Screen) cboScreen.getSelectedItem();
@@ -2036,8 +2113,10 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private javax.swing.JMenuItem mnuCaptureWindow;
     private javax.swing.JCheckBoxMenuItem mnuChkRemoteWebServer;
     private java.awt.MenuItem mnuExit;
+    private javax.swing.JMenuItem mnuExportSettings;
     private javax.swing.JMenu mnuFile;
     private javax.swing.JMenuItem mnuIdentifyScreen;
+    private javax.swing.JMenuItem mnuImportSettings;
     private java.awt.CheckboxMenuItem mnuRecord;
     private javax.swing.JMenuItem mnuRefreshSources;
     private javax.swing.JMenuItem mnuResetPreferences;
