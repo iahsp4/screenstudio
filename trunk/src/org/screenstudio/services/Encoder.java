@@ -73,8 +73,8 @@ public class Encoder {
 
     private static String parseGeneric(Screen s, File videoFolder) throws IOException, InterruptedException {
         String command = s.getCommand().getCommandLine();
-        
-        if (command.contains("@SCREENDEV")){
+
+        if (command.contains("@SCREENDEV")) {
             command = command.replaceAll("@SCREENDEV", s.getId());
         }
         if (command.contains("@LOCALSINK")) {
@@ -218,35 +218,34 @@ public class Encoder {
 
     public static Encoder[] getEncoders(File f) throws ParserConfigurationException, SAXException, IOException {
         ArrayList<Encoder> list = new ArrayList<Encoder>();
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        InputStream in;
+
         if (f != null) {
-            in = f.toURI().toURL().openStream();
-        } else {
-            in = Encoder.class.getResourceAsStream(getXMLResourceName());
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            InputStream in = f.toURI().toURL().openStream();
+
+            Document doc = builder.parse(in);
+            NodeList setting = doc.getElementsByTagName("services");
+            for (int i = 0; i < setting.getLength(); i++) {
+                Node node = setting.item(i);
+                if (node.getAttributes().getNamedItem("author") != null) {
+                    Author = node.getAttributes().getNamedItem("author").getNodeValue();
+                }
+                if (node.getAttributes().getNamedItem("os") != null) {
+                    OS = node.getAttributes().getNamedItem("os").getNodeValue();
+                }
+                if (node.getAttributes().getNamedItem("backend") != null) {
+                    Backend = node.getAttributes().getNamedItem("backend").getNodeValue();
+                }
+                if (node.getAttributes().getNamedItem("version") != null) {
+                    Version = node.getAttributes().getNamedItem("version").getNodeValue();
+                }
+            }
+            NodeList nodes = doc.getElementsByTagName("service");
+            for (int i = 0; i < nodes.getLength(); i++) {
+                list.add(new Encoder(nodes.item(i)));
+            }
+            in.close();
         }
-        Document doc = builder.parse(in);
-        NodeList setting = doc.getElementsByTagName("services");
-        for (int i = 0; i < setting.getLength(); i++) {
-            Node node = setting.item(i);
-            if (node.getAttributes().getNamedItem("author") != null) {
-                Author = node.getAttributes().getNamedItem("author").getNodeValue();
-            }
-            if (node.getAttributes().getNamedItem("os") != null) {
-                OS = node.getAttributes().getNamedItem("os").getNodeValue();
-            }
-            if (node.getAttributes().getNamedItem("backend") != null) {
-                Backend = node.getAttributes().getNamedItem("backend").getNodeValue();
-            }
-            if (node.getAttributes().getNamedItem("version") != null) {
-                Version = node.getAttributes().getNamedItem("version").getNodeValue();
-            }
-        }
-        NodeList nodes = doc.getElementsByTagName("service");
-        for (int i = 0; i < nodes.getLength(); i++) {
-            list.add(new Encoder(nodes.item(i)));
-        }
-        in.close();
         return list.toArray(new Encoder[list.size()]);
     }
 
@@ -303,47 +302,5 @@ public class Encoder {
             }
         }
         return subList.toArray(new Layout[subList.size()]);
-    }
-
-    public static String getXMLResourceName() {
-        //Using default configuration.
-        String retValue = "/org/screenstudio/services/distros/default.xml";
-        try {
-            File distroInfo = new File("/etc/issue");
-            if (distroInfo.exists()) {
-                //This is probably linux...
-                InputStream in = new File("/etc/issue").toURI().toURL().openStream();
-                byte[] buffer = new byte[in.available()];
-                in.read(buffer);
-                in.close();
-                String currentDistro = new String(buffer).replaceAll(" ", "_").toUpperCase();
-                Properties mapping = new Properties();
-                in = Encoder.class.getResourceAsStream("/org/screenstudio/services/distros/Mapping.properties");
-                mapping.load(in);
-                in.close();
-                Enumeration list = mapping.propertyNames();
-                while (list.hasMoreElements()) {
-                    String key = list.nextElement().toString();
-                    if (currentDistro.startsWith(key.toUpperCase())) {
-                        //Loading specific xml configuration for current distro
-                        retValue = "/org/screenstudio/services/distros/" + mapping.getProperty(key);
-                        System.out.println("Using " + retValue + " for " + currentDistro);
-                        break;
-                    }
-                }
-            } else {
-                // Trying for OSX...
-                String osName = System.getProperty("os.name").toLowerCase();
-                boolean isMacOs = osName.startsWith("mac os x");
-                if (isMacOs) {
-                    retValue = "/org/screenstudio/services/distros/osx.xml";
-                    System.out.println("OSX detected...");
-                }
-            }
-
-        } catch (Exception ex) {
-            System.err.println("ERROR loading distro name: " + ex.getMessage());
-        }
-        return retValue;
     }
 }
