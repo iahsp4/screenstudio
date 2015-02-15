@@ -22,7 +22,4 @@ package org.screenstudio.gui;
  */
 public class Version {
     public static String version = "ScreenStudio 1.5.3";
-    public static void main(String args[]){
-        System.out.println(version.replaceAll("ScreenStudio ", ""));
-    }
 }

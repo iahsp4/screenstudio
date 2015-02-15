@@ -1,3 +1,11 @@
+echo "What is the new version?"
+read -e -p "Enter version:" -i "" VERSION
+echo $VERSION
+
+echo "Updating version..."
+sed "s/version = \x22.*\x22/version = \x22ScreenStudio $VERSION\x22/g" src/org/screenstudio/gui/Version.java>src/org/screenstudio/gui/VersionNEW.java
+rm src/org/screenstudio/gui/Version.java
+mv src/org/screenstudio/gui/VersionNEW.java src/org/screenstudio/gui/Version.java
 echo "Building Binaries"
 ant -f . -Dnb.internal.action.name=rebuild clean jar
 
@@ -7,9 +15,6 @@ rm ScreenStudio.app/Contents/MacOS/*~
 rm Packages/*
 rmdir Packages
 
-echo "Getting version number..."
-VERSION=$(java -cp dist/ScreenStudio.jar org.screenstudio.gui.Version)
-echo $VERSION
 echo "Copying files..."
 cp dist/ScreenStudio.jar ScreenStudio.app/Contents/MacOS/ScreenStudio.jar
 cp dist/ScreenStudio.jar ScreenStudio.Ubuntu/ScreenStudio.jar
