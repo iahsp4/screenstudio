@@ -258,7 +258,7 @@
                                   <Component id="lblMadeBY" alignment="1" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="tabs" max="32767" attributes="0"/>
+                          <Component id="tabs" pref="636" max="32767" attributes="0"/>
                           <Component id="txtStatus" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -380,7 +380,7 @@
                               </Group>
                               <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="cboRecordServices" pref="468" max="32767" attributes="0"/>
+                                  <Component id="cboRecordServices" pref="480" max="32767" attributes="0"/>
                                   <Component id="cboRecordProfile" alignment="0" max="32767" attributes="0"/>
                                   <Component id="cboRecordPresets" alignment="0" max="32767" attributes="0"/>
                               </Group>
@@ -416,7 +416,7 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="lblRecordTargetRecordingFile" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="65" max="32767" attributes="0"/>
+                              <EmptySpace pref="112" max="32767" attributes="0"/>
                               <Component id="lblRemoteRecordMessage" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -555,7 +555,7 @@
                                       <Component id="lblStreamPresets" min="-2" pref="120" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                                       <Component id="cboStreamPresets" min="-2" pref="197" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="248" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="227" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="lblRemoteRTMPMessage" max="32767" attributes="0"/>
                               </Group>
@@ -592,7 +592,7 @@
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace type="separate" pref="29" max="32767" attributes="0"/>
+                              <EmptySpace type="separate" pref="76" max="32767" attributes="0"/>
                               <Component id="tglStreamToServer" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -760,17 +760,6 @@
                               <Component id="cboAudioMonitors" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
-                              <Component id="lblScreen" min="-2" pref="120" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-                              <Component id="cboScreen" min="-2" pref="145" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="spinFPS" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="lblFrameRate" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="lblScreenDimenssion" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="1" max="-2" attributes="0">
                                   <Component id="lblDelay" max="32767" attributes="0"/>
                                   <Component id="lblScreen2" max="32767" attributes="0"/>
@@ -800,9 +789,35 @@
                                               <Component id="lblWarningWebcamOSX" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
-                                      <EmptySpace min="0" pref="56" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="35" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
+                          </Group>
+                          <Component id="jSeparator5" alignment="1" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="lblScreen" min="-2" pref="120" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                              <Component id="cboScreen" min="-2" pref="145" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <Component id="spinFPS" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <Component id="lblFrameRate" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="lblScreenDimenssion" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="lblRemoteSource" min="-2" pref="122" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="txtRemoteSourceURL" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="lblScreen3" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="spinRemoteWidth" min="-2" pref="75" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="lblRemoteSize" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="spinRemoteHeight" min="-2" pref="75" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -851,7 +866,20 @@
                           <Component id="cboAudioSource" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cboAudioMonitors" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jSeparator5" min="-2" pref="10" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lblRemoteSource" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtRemoteSourceURL" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" alignment="3" groupAlignment="3" attributes="0">
+                              <Component id="lblScreen3" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="spinRemoteWidth" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblRemoteSize" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="spinRemoteHeight" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace pref="16" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1054,6 +1082,49 @@
                 <Property name="text" type="java.lang.String" value="WARNING: Webcam does not work well in OS X"/>
               </Properties>
             </Component>
+            <Component class="javax.swing.JSeparator" name="jSeparator5">
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblRemoteSource">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="org/screenstudio/gui/lang/languages.properties" key="REMOTESOURCE" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" value="The list of available Pulseaudio sources"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="txtRemoteSourceURL">
+              <Properties>
+                <Property name="toolTipText" type="java.lang.String" value="http://... ftp://... file://..."/>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblScreen3">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="org/screenstudio/gui/lang/languages.properties" key="SIZE" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JSpinner" name="spinRemoteWidth">
+              <Properties>
+                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                  <SpinnerModel initial="320" maximum="1920" minimum="160" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblRemoteSize">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="X"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JSpinner" name="spinRemoteHeight">
+              <Properties>
+                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                  <SpinnerModel initial="240" maximum="1080" minimum="120" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                </Property>
+              </Properties>
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="panOptions">
@@ -1107,7 +1178,7 @@
                                       </Group>
                                   </Group>
                               </Group>
-                              <EmptySpace min="0" pref="224" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="232" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -1138,7 +1209,7 @@
                           <Component id="lblOverlayLayout" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cboOverlayLayout" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="72" max="32767" attributes="0"/>
+                      <EmptySpace pref="124" max="32767" attributes="0"/>
                       <Component id="btnOptionsApply" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
