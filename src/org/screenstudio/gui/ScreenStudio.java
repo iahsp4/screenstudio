@@ -90,7 +90,6 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private Image icon = null;
     private Image iconRunning = null;
     private Image iconStarting = null;
-    private File loadedConfigurationFile = null;
     private final WebRemote remote;
     private File videoFolder = new File(System.getProperty("user.home"), "ScreenStudio");
     private ArrayList<String> lastLogs = new ArrayList<String>();
@@ -101,12 +100,20 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private String shortcutRecording = "control shift R";
     private String shortcutStreaming = "control shift S";
     private EkitCore overlayEditor = new EkitCore(false, null, null, null, null, null, true, false, true, false, null, null, false, false, false, true, EkitCore.TOOLBAR_DEFAULT_MULTI, true);
+    private boolean devMode = false;
 
     /**
      * Creates new form ScreenStudio
+     *
+     * @param defaultConfig
+     * @param devModeActivated
      */
-    public ScreenStudio(File defaultConfig) {
+    public ScreenStudio(File defaultConfig, boolean devModeActivated) {
         initComponents();
+        devMode = devModeActivated;
+        //Ensure that streamkey is not visible while in dev mode
+        //This is usefull when doing live coding
+        txtStreamName.setVisible(!devMode);
         this.setTitle(Version.version);
 
         if (Screen.isOSX()) {
@@ -142,6 +149,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         }
         pack();
     }
+
     private void exportSettings() throws FileNotFoundException, IOException, BackingStoreException {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(chooser.getFileSystemView().getDefaultDirectory());
@@ -183,61 +191,65 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     }
 
     private void savePreferences() {
-        try {
+        if (!devMode) {
+            try {
 
-            java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userRoot().node(this.getClass().getSimpleName());
-            prefs.put("name", txtStreamName.getText());
+                java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userRoot().node(this.getClass().getSimpleName());
+                prefs.put("name", txtStreamName.getText());
 
-            if (((Microphone) cboAudioMonitors.getSelectedItem()).getDevice() != null) {
-                prefs.put("audiomonitor", ((Microphone) cboAudioMonitors.getSelectedItem()).getDevice());
-            } else {
-                prefs.put("audiomonitor", "");
-            }
-            if (((Microphone) cboAudioSource.getSelectedItem()).getDevice() != null) {
-                prefs.put("audiosource", ((Microphone) cboAudioSource.getSelectedItem()).getDevice());
-            } else {
-                prefs.put("audiosource", "");
-            }
+                if (((Microphone) cboAudioMonitors.getSelectedItem()).getDevice() != null) {
+                    prefs.put("audiomonitor", ((Microphone) cboAudioMonitors.getSelectedItem()).getDevice());
+                } else {
+                    prefs.put("audiomonitor", "");
+                }
+                if (((Microphone) cboAudioSource.getSelectedItem()).getDevice() != null) {
+                    prefs.put("audiosource", ((Microphone) cboAudioSource.getSelectedItem()).getDevice());
+                } else {
+                    prefs.put("audiosource", "");
+                }
 
-            if (((Webcam) cbowebcamSource.getSelectedItem()).getDevice() != null) {
-                prefs.put("webcamsource", ((Webcam) cbowebcamSource.getSelectedItem()).getDevice());
-            } else {
-                prefs.remove("webcamsource");
-            }
-            prefs.putInt("webcamcapturewidth", (Integer) spinWebcamCaptureWidth.getValue());
-            prefs.putInt("webcamcaptureheight", (Integer) spinWebcamCaptureHeight.getValue());
-            prefs.putFloat("webcamoffset", (Float) spinWebcamOffset.getValue());
-            prefs.putInt("fps", (Integer) spinFPS.getValue());
-            prefs.put("screensource", cboScreen.getSelectedItem().toString());
-            prefs.put("overlayhtml", overlayEditor.getTextPane().getText());
-            prefs.putInt("webcamlayout", cboWebcamLayout.getSelectedIndex());
-            prefs.putInt("overlaylayout", cboOverlayLayout.getSelectedIndex());
-            prefs.putInt("recordservice", cboRecordServices.getSelectedIndex());
-            prefs.putInt("recordprofile", cboRecordProfile.getSelectedIndex());
-            prefs.putInt("rtmpservice", cboRTMPServices.getSelectedIndex());
-            prefs.putInt("rtmpserver", cboRTMPServer.getSelectedIndex());
-            prefs.putInt("rtmpprofile", cboRTMPProfiles.getSelectedIndex());
-            prefs.put("videofolder", videoFolder.getAbsolutePath());
-            prefs.put("shortcutrecording", shortcutRecording);
-            prefs.put("shortcutstreaming", shortcutStreaming);
+                if (((Webcam) cbowebcamSource.getSelectedItem()).getDevice() != null) {
+                    prefs.put("webcamsource", ((Webcam) cbowebcamSource.getSelectedItem()).getDevice());
+                } else {
+                    prefs.remove("webcamsource");
+                }
+                prefs.putInt("webcamcapturewidth", (Integer) spinWebcamCaptureWidth.getValue());
+                prefs.putInt("webcamcaptureheight", (Integer) spinWebcamCaptureHeight.getValue());
+                prefs.putFloat("webcamoffset", (Float) spinWebcamOffset.getValue());
+                prefs.putInt("fps", (Integer) spinFPS.getValue());
+                prefs.put("screensource", cboScreen.getSelectedItem().toString());
+                prefs.put("overlayhtml", overlayEditor.getTextPane().getText());
+                prefs.putInt("webcamlayout", cboWebcamLayout.getSelectedIndex());
+                prefs.putInt("overlaylayout", cboOverlayLayout.getSelectedIndex());
+                prefs.putInt("recordservice", cboRecordServices.getSelectedIndex());
+                prefs.putInt("recordprofile", cboRecordProfile.getSelectedIndex());
+                prefs.putInt("rtmpservice", cboRTMPServices.getSelectedIndex());
+                prefs.putInt("rtmpserver", cboRTMPServer.getSelectedIndex());
+                prefs.putInt("rtmpprofile", cboRTMPProfiles.getSelectedIndex());
+                prefs.put("videofolder", videoFolder.getAbsolutePath());
+                prefs.put("shortcutrecording", shortcutRecording);
+                prefs.put("shortcutstreaming", shortcutStreaming);
 
-            if (cboStreamPresets.getSelectedItem() != null) {
-                prefs.put("rtmppreset", cboStreamPresets.getSelectedItem().toString());
-            }
-            if (cboRecordPresets.getSelectedItem() != null) {
-                prefs.put("recordpreset", cboRecordPresets.getSelectedItem().toString());
-            }
-            prefs.flush();
-            if (java.util.prefs.Preferences.userRoot().nodeExists(this.getName())) {
-                //small bugs where prefs were saved in the wrong node.  Loading old prefs and deleting
-                prefs = java.util.prefs.Preferences.userRoot().node(this.getName());
-                prefs.removeNode();
+                if (cboStreamPresets.getSelectedItem() != null) {
+                    prefs.put("rtmppreset", cboStreamPresets.getSelectedItem().toString());
+                }
+                if (cboRecordPresets.getSelectedItem() != null) {
+                    prefs.put("recordpreset", cboRecordPresets.getSelectedItem().toString());
+                }
                 prefs.flush();
+                if (java.util.prefs.Preferences.userRoot().nodeExists(this.getName())) {
+                    //small bugs where prefs were saved in the wrong node.  Loading old prefs and deleting
+                    prefs = java.util.prefs.Preferences.userRoot().node(this.getName());
+                    prefs.removeNode();
+                    prefs.flush();
+                }
+            } catch (Exception ex) {
+                MsgLogs logs = new MsgLogs("Saving preferences...", ex, this, true);
+                logs.setLocationByPlatform(true);
+                logs.setVisible(true);
             }
-        } catch (Exception ex) {
-            MsgLogs logs = new MsgLogs("Saving preferences...", ex, this, true);
-            logs.setLocationByPlatform(true);
-            logs.setVisible(true);
+        } else {
+            System.out.println("Dev Mode enabled, not saving preferences...");
         }
     }
 
@@ -247,49 +259,57 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     }
 
     private void initializeShortCuts() {
-        final ScreenStudio instance = this;
-        new Thread(new Runnable() {
+        if (!devMode) {
+            final ScreenStudio instance = this;
+            new Thread(new Runnable() {
 
-            @Override
-            public void run() {
-                try {
-                    if (keyShortcuts == null) {
-                        keyShortcuts = Provider.getCurrentProvider(false);
+                @Override
+                public void run() {
+                    try {
+                        if (keyShortcuts == null) {
+                            keyShortcuts = Provider.getCurrentProvider(false);
+                        }
+                        keyShortcuts.reset();
+                        keyShortcuts.register(KeyStroke.getKeyStroke(shortcutRecording), instance);
+                        keyShortcuts.register(KeyStroke.getKeyStroke(shortcutStreaming), instance);
+                    } catch (Exception ex) {
+                        keyShortcuts = null;
+                        MsgLogs logs = new MsgLogs("Setting shortcuts", ex, instance, true);
+                        logs.setLocationByPlatform(true);
+                        logs.setVisible(true);
                     }
-                    keyShortcuts.reset();
-                    keyShortcuts.register(KeyStroke.getKeyStroke(shortcutRecording), instance);
-                    keyShortcuts.register(KeyStroke.getKeyStroke(shortcutStreaming), instance);
-                } catch (Exception ex) {
-                    keyShortcuts = null;
-                    MsgLogs logs = new MsgLogs("Setting shortcuts", ex, instance, true);
-                    logs.setLocationByPlatform(true);
-                    logs.setVisible(true);
                 }
-            }
-        }).start();
+            }).start();
+        } else {
+            System.out.println("Dev Mode Enabled: Not enabling shortcuts...");
+        }
 
     }
 
     private void stopShortcuts() {
-        final ScreenStudio instance = this;
-        new Thread(new Runnable() {
+        if (!devMode) {
+            final ScreenStudio instance = this;
+            new Thread(new Runnable() {
 
-            @Override
-            public void run() {
-                try {
-                    if (keyShortcuts != null) {
-                        keyShortcuts.reset();
-                        keyShortcuts.stop();
+                @Override
+                public void run() {
+                    try {
+                        if (keyShortcuts != null) {
+                            keyShortcuts.reset();
+                            keyShortcuts.stop();
+                        }
+
+                    } catch (Exception ex) {
+                        keyShortcuts = null;
+                        MsgLogs logs = new MsgLogs("Setting shortcuts", ex, instance, true);
+                        logs.setLocationByPlatform(true);
+                        logs.setVisible(true);
                     }
-
-                } catch (Exception ex) {
-                    keyShortcuts = null;
-                    MsgLogs logs = new MsgLogs("Setting shortcuts", ex, instance, true);
-                    logs.setLocationByPlatform(true);
-                    logs.setVisible(true);
                 }
-            }
-        }).start();
+            }).start();
+        } else {
+            System.out.println("Dev Mode Enabled: Not disabling shortcuts");
+        }
     }
 
     private void loadPreferences(boolean reloading) {
@@ -446,7 +466,9 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
 
     private void updateControls(boolean isStreaming) {
         lblScreenDimenssion.setEnabled(!isStreaming);
-        txtStreamName.setVisible(!isStreaming);
+        //Make sure that while developping, key is not shown
+        //as could be streaming live while coding...
+        txtStreamName.setVisible(!isStreaming && !devMode);
         btnPreview.setEnabled(!isStreaming);
         cboAudioSource.setEnabled(!isStreaming);
         cboAudioMonitors.setEnabled(!isStreaming);
@@ -562,29 +584,37 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     }
 
     private void displaySystemTrayIcon() throws IOException {
-        if (SystemTray.isSupported() && trayIcon == null) {
-            SystemTray tray = SystemTray.getSystemTray();
-            try {
-                trayIconSize = tray.getTrayIconSize();
-                trayIconDefault = icon.getScaledInstance(-1, (int) trayIconSize.getHeight(), Image.SCALE_SMOOTH);
-                trayIconStarting = iconStarting.getScaledInstance(-1, (int) trayIconSize.getHeight(), Image.SCALE_SMOOTH);
-                trayIconRunning = iconRunning.getScaledInstance(-1, (int) trayIconSize.getHeight(), Image.SCALE_SMOOTH);
-                trayIcon = new TrayIcon(trayIconDefault, this.getTitle(), trayMenu);
-                trayIcon.setImageAutoSize(false);
-                tray.add(trayIcon);
-            } catch (AWTException ex) {
-                Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
+        if (!devMode) {
+            if (SystemTray.isSupported() && trayIcon == null) {
+                SystemTray tray = SystemTray.getSystemTray();
+                try {
+                    trayIconSize = tray.getTrayIconSize();
+                    trayIconDefault = icon.getScaledInstance(-1, (int) trayIconSize.getHeight(), Image.SCALE_SMOOTH);
+                    trayIconStarting = iconStarting.getScaledInstance(-1, (int) trayIconSize.getHeight(), Image.SCALE_SMOOTH);
+                    trayIconRunning = iconRunning.getScaledInstance(-1, (int) trayIconSize.getHeight(), Image.SCALE_SMOOTH);
+                    trayIcon = new TrayIcon(trayIconDefault, this.getTitle(), trayMenu);
+                    trayIcon.setImageAutoSize(false);
+                    tray.add(trayIcon);
+                } catch (AWTException ex) {
+                    Logger.getLogger(ScreenStudio.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
-        }
-        if (trayIcon == null) {
-            this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+            if (trayIcon == null) {
+                this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+            }
+        } else {
+            System.out.println("Dev Mode Enabled: Not showing Tray Icon");
         }
     }
 
     private void removeSystemTrayIcon() {
-        if (SystemTray.isSupported()) {
-            SystemTray tray = SystemTray.getSystemTray();
-            tray.remove(trayIcon);
+        if (!devMode) {
+            if (SystemTray.isSupported()) {
+                SystemTray tray = SystemTray.getSystemTray();
+                tray.remove(trayIcon);
+            }
+        } else {
+            System.out.println("Dev Mode Enabled: Not removing Tray Icon");
         }
     }
 
@@ -999,7 +1029,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                                 .addComponent(lblStreamPresets, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(4, 4, 4)
                                 .addComponent(cboStreamPresets, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 217, Short.MAX_VALUE))
+                                .addGap(0, 248, Short.MAX_VALUE))
                             .addComponent(lblRemoteRTMPMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tglStreamToServer)))
@@ -1026,7 +1056,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                     .addComponent(txtStreamName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(panStreamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panStreamLayout.createSequentialGroup()
-                        .addGap(18, 18, Short.MAX_VALUE)
+                        .addGap(18, 29, Short.MAX_VALUE)
                         .addComponent(tglStreamToServer))
                     .addGroup(panStreamLayout.createSequentialGroup()
                         .addGap(6, 6, 6)
@@ -2028,13 +2058,18 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
             @Override
             public void run() {
                 ScreenStudio s;
-                if (arguments.length == 1) {
+                if (arguments.length >= 1) {
                     File config = new File(arguments[0]);
                     if (!config.exists()) {
                         config = new File("default.xml");
                     }
                     if (config.exists()) {
-                        s = new ScreenStudio(config);
+                        if (arguments.length == 2) {
+                            s = new ScreenStudio(config, arguments[1].equalsIgnoreCase("devmode"));
+
+                        } else {
+                            s = new ScreenStudio(config, false);
+                        }
                         try {
                             s.setIconImage(javax.imageio.ImageIO.read(this.getClass().getResource("icon.png")));
                         } catch (IOException ex) {
@@ -2185,28 +2220,31 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
 
     @Override
     public void onHotKey(HotKey hotkey) {
-        String shortcut = "";
-
-        if (hotkey.toString().contains("ctrl")) {
-            shortcut += " control";
-        }
-        if (hotkey.toString().contains("alt")) {
-            shortcut += " alt";
-        }
-        if (hotkey.toString().contains("shift")) {
-            shortcut += " shift";
-        }
-        shortcut += " " + KeyEvent.getKeyText(hotkey.keyStroke.getKeyCode());
-
-        shortcut = shortcut.trim().toUpperCase().replaceAll("  ", " ");
-        if (shortcut.equals(shortcutRecording.toUpperCase())) {
-            if (tglRecordVideo.isEnabled()) {
-                tglRecordVideo.doClick();
+        if (!devMode) {
+            String shortcut = "";
+            if (hotkey.toString().contains("ctrl")) {
+                shortcut += " control";
             }
-        } else if (shortcut.equals(shortcutStreaming.toUpperCase())) {
-            if (tglStreamToServer.isEnabled()) {
-                tglStreamToServer.doClick();
+            if (hotkey.toString().contains("alt")) {
+                shortcut += " alt";
             }
+            if (hotkey.toString().contains("shift")) {
+                shortcut += " shift";
+            }
+            shortcut += " " + KeyEvent.getKeyText(hotkey.keyStroke.getKeyCode());
+
+            shortcut = shortcut.trim().toUpperCase().replaceAll("  ", " ");
+            if (shortcut.equals(shortcutRecording.toUpperCase())) {
+                if (tglRecordVideo.isEnabled()) {
+                    tglRecordVideo.doClick();
+                }
+            } else if (shortcut.equals(shortcutStreaming.toUpperCase())) {
+                if (tglStreamToServer.isEnabled()) {
+                    tglStreamToServer.doClick();
+                }
+            }
+        } else {
+            System.out.println("Dev Mode Enabled: Ignoring shortcut keys");
         }
     }
 }
