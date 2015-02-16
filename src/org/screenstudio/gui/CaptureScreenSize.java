@@ -56,6 +56,7 @@ public class CaptureScreenSize extends javax.swing.JDialog {
         btn1280720 = new javax.swing.JButton();
         btn720480 = new javax.swing.JButton();
         btn640360 = new javax.swing.JButton();
+        btn19201080 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("ScreenStudio - Select area to capture...");
@@ -101,6 +102,13 @@ public class CaptureScreenSize extends javax.swing.JDialog {
             }
         });
 
+        btn19201080.setText("1920x1080");
+        btn19201080.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn19201080ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -116,9 +124,12 @@ public class CaptureScreenSize extends javax.swing.JDialog {
                         .addComponent(btnSelect))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btn1280720)
                             .addComponent(btn720480)
-                            .addComponent(btn640360))
+                            .addComponent(btn640360)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btn1280720)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btn19201080)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -128,7 +139,9 @@ public class CaptureScreenSize extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn1280720)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn1280720)
+                    .addComponent(btn19201080))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn720480)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -166,15 +179,23 @@ public class CaptureScreenSize extends javax.swing.JDialog {
 
     private void btn1280720ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn1280720ActionPerformed
         setSize(1280, 720);
+        btnSelect.doClick();
     }//GEN-LAST:event_btn1280720ActionPerformed
 
     private void btn720480ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn720480ActionPerformed
         setSize(720, 480);
+        btnSelect.doClick();
     }//GEN-LAST:event_btn720480ActionPerformed
 
     private void btn640360ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn640360ActionPerformed
         setSize(640, 360);
+        btnSelect.doClick();
     }//GEN-LAST:event_btn640360ActionPerformed
+
+    private void btn19201080ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn19201080ActionPerformed
+        setSize(1920, 1080);
+        btnSelect.doClick();
+    }//GEN-LAST:event_btn19201080ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -220,6 +241,7 @@ public class CaptureScreenSize extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn1280720;
+    private javax.swing.JButton btn19201080;
     private javax.swing.JButton btn640360;
     private javax.swing.JButton btn720480;
     private javax.swing.JButton btnReset;

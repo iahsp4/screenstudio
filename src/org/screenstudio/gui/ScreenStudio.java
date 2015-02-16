@@ -230,6 +230,10 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                 prefs.put("shortcutrecording", shortcutRecording);
                 prefs.put("shortcutstreaming", shortcutStreaming);
 
+                prefs.put("REMOTEURL", txtRemoteSourceURL.getText());
+                prefs.putInt("REMOTEWIDTH", (Integer) spinRemoteWidth.getValue());
+                prefs.putInt("REMOTEHEIGHT", (Integer) spinRemoteHeight.getValue());
+
                 if (cboStreamPresets.getSelectedItem() != null) {
                     prefs.put("rtmppreset", cboStreamPresets.getSelectedItem().toString());
                 }
@@ -392,6 +396,10 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
 
             txtOptionRecordKey.setText(shortcutRecording.substring(shortcutRecording.length() - 1));
             txtOptionStreamKey.setText(shortcutStreaming.substring(shortcutStreaming.length() - 1));
+
+            txtRemoteSourceURL.setText(prefs.get("REMOTEURL", ""));
+            spinRemoteWidth.setValue(prefs.getInt("REMOTEWIDTH", 720));
+            spinRemoteHeight.setValue(prefs.getInt("REMOTEHEIGHT", 480));
         } catch (Exception ex) {
             MsgLogs logs = new MsgLogs("Loading preferences...", ex, this, true);
             logs.setLocationByPlatform(true);
@@ -476,6 +484,10 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         cboScreen.setEnabled(!isStreaming);
         overlayEditor.setEnabled(!isStreaming);
         cboStreamPresets.setEnabled(!isStreaming);
+        Screen s = (Screen) cboScreen.getSelectedItem();
+        txtRemoteSourceURL.setEnabled(!isStreaming && s != null && s.isRemote());
+        spinRemoteWidth.setEnabled(!isStreaming && s != null && s.isRemote());
+        spinRemoteHeight.setEnabled(!isStreaming && s != null && s.isRemote());
         spinFPS.setEnabled(!isStreaming);
         spinWebcamCaptureWidth.setEnabled(!isStreaming);
         spinWebcamCaptureHeight.setEnabled(!isStreaming);
@@ -771,6 +783,13 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         lblWebcamLayout = new javax.swing.JLabel();
         cboWebcamLayout = new javax.swing.JComboBox();
         lblWarningWebcamOSX = new javax.swing.JLabel();
+        jSeparator5 = new javax.swing.JSeparator();
+        lblRemoteSource = new javax.swing.JLabel();
+        txtRemoteSourceURL = new javax.swing.JTextField();
+        lblScreen3 = new javax.swing.JLabel();
+        spinRemoteWidth = new javax.swing.JSpinner();
+        lblRemoteSize = new javax.swing.JLabel();
+        spinRemoteHeight = new javax.swing.JSpinner();
         panOptions = new javax.swing.JPanel();
         lblOptionsRecordShortkey = new javax.swing.JLabel();
         lblOptionsStreamShortkey = new javax.swing.JLabel();
@@ -930,7 +949,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                             .addComponent(lblRecordPresets, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(4, 4, 4)
                         .addGroup(panRecordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cboRecordServices, 0, 468, Short.MAX_VALUE)
+                            .addComponent(cboRecordServices, 0, 480, Short.MAX_VALUE)
                             .addComponent(cboRecordProfile, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cboRecordPresets, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
@@ -957,7 +976,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                             .addComponent(cboRecordPresets, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblRecordTargetRecordingFile)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
                         .addComponent(lblRemoteRecordMessage)))
                 .addContainerGap())
         );
@@ -1029,7 +1048,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                                 .addComponent(lblStreamPresets, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(4, 4, 4)
                                 .addComponent(cboStreamPresets, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 248, Short.MAX_VALUE))
+                                .addGap(0, 227, Short.MAX_VALUE))
                             .addComponent(lblRemoteRTMPMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tglStreamToServer)))
@@ -1056,7 +1075,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                     .addComponent(txtStreamName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(panStreamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panStreamLayout.createSequentialGroup()
-                        .addGap(18, 29, Short.MAX_VALUE)
+                        .addGap(18, 76, Short.MAX_VALUE)
                         .addComponent(tglStreamToServer))
                     .addGroup(panStreamLayout.createSequentialGroup()
                         .addGap(6, 6, 6)
@@ -1143,6 +1162,21 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         lblWarningWebcamOSX.setForeground(new java.awt.Color(204, 0, 0));
         lblWarningWebcamOSX.setText("WARNING: Webcam does not work well in OS X");
 
+        lblRemoteSource.setText(bundle.getString("REMOTESOURCE")); // NOI18N
+        lblRemoteSource.setToolTipText("The list of available Pulseaudio sources");
+
+        txtRemoteSourceURL.setToolTipText("http://... ftp://... file://...");
+        txtRemoteSourceURL.setEnabled(false);
+
+        lblScreen3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblScreen3.setText(bundle.getString("SIZE")); // NOI18N
+
+        spinRemoteWidth.setModel(new javax.swing.SpinnerNumberModel(320, 160, 1920, 1));
+
+        lblRemoteSize.setText("X");
+
+        spinRemoteHeight.setModel(new javax.swing.SpinnerNumberModel(240, 120, 1080, 1));
+
         javax.swing.GroupLayout panSourcesLayout = new javax.swing.GroupLayout(panSources);
         panSources.setLayout(panSourcesLayout);
         panSourcesLayout.setHorizontalGroup(
@@ -1158,16 +1192,6 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                         .addComponent(cboAudioSource, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
                         .addComponent(cboAudioMonitors, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(panSourcesLayout.createSequentialGroup()
-                        .addComponent(lblScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(4, 4, 4)
-                        .addComponent(cboScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spinFPS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblFrameRate)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblScreenDimenssion))
                     .addGroup(panSourcesLayout.createSequentialGroup()
                         .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(lblDelay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1194,7 +1218,31 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                                         .addComponent(lblDelay1)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(lblWarningWebcamOSX)))
-                                .addGap(0, 56, Short.MAX_VALUE)))))
+                                .addGap(0, 35, Short.MAX_VALUE))))
+                    .addComponent(jSeparator5, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panSourcesLayout.createSequentialGroup()
+                        .addComponent(lblScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(4, 4, 4)
+                        .addComponent(cboScreen, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spinFPS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblFrameRate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblScreenDimenssion)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(panSourcesLayout.createSequentialGroup()
+                        .addComponent(lblRemoteSource, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtRemoteSourceURL)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblScreen3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spinRemoteWidth, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblRemoteSize)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spinRemoteHeight, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         panSourcesLayout.setVerticalGroup(
@@ -1234,7 +1282,18 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                     .addComponent(lblAudioSource)
                     .addComponent(cboAudioSource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cboAudioMonitors, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRemoteSource)
+                    .addComponent(txtRemoteSourceURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panSourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblScreen3)
+                        .addComponent(spinRemoteWidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblRemoteSize)
+                        .addComponent(spinRemoteHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         tabs.addTab(bundle.getString("TAB_SOURCES"), panSources); // NOI18N
@@ -1319,7 +1378,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                                     .addComponent(chkOptionStreamShift)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(txtOptionStreamKey))))
-                        .addGap(0, 224, Short.MAX_VALUE)))
+                        .addGap(0, 232, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         panOptionsLayout.setVerticalGroup(
@@ -1343,7 +1402,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                 .addGroup(panOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblOverlayLayout)
                     .addComponent(cboOverlayLayout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
                 .addComponent(btnOptionsApply)
                 .addContainerGap())
         );
@@ -1492,7 +1551,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(lblMadeFor, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(lblMadeBY, javax.swing.GroupLayout.Alignment.TRAILING)))
-                            .addComponent(tabs)
+                            .addComponent(tabs, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
                             .addComponent(txtStatus))
                         .addContainerGap())))
         );
@@ -1525,8 +1584,16 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                 Screen s = (Screen) cboScreen.getItemAt(i);
                 new ScreenIdentifier(s.getLabel(), (int) s.getSize().getX() + 100, (int) s.getSize().getY() + 100).setVisible(true);
             }
+            Screen s = (Screen) cboScreen.getSelectedItem();
+            txtRemoteSourceURL.setEnabled(s != null && s.isRemote());
+            spinRemoteWidth.setEnabled(s != null && s.isRemote());
+            spinRemoteHeight.setEnabled(s != null && s.isRemote());
+
         } else {
             lblScreenDimenssion.setText("---");
+            txtRemoteSourceURL.setEnabled(false);
+            spinRemoteWidth.setEnabled(false);
+            spinRemoteHeight.setEnabled(false);
         }
     }//GEN-LAST:event_cboScreenItemStateChanged
 
@@ -1658,6 +1725,10 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
         Screen s = null;
         if (enc != null) {
             s = (Screen) cboScreen.getSelectedItem();
+            if (s.isRemote()) {
+                s.setId(txtRemoteSourceURL.getText());
+                s.setSize(new Rectangle((Integer) spinRemoteWidth.getValue(), (Integer) spinRemoteHeight.getValue()));
+            }
             int valign = JLabel.BOTTOM;
             int halign = JLabel.LEFT;
             switch (cboOverlayLayout.getSelectedIndex()) {
@@ -1704,15 +1775,11 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
                 s.getWebcam().setHeight((Integer) spinWebcamCaptureHeight.getValue());
                 s.getWebcam().setWidth((Integer) spinWebcamCaptureWidth.getValue());
                 s.getWebcam().setOffset((Float) spinWebcamOffset.getValue());
-                if (cboScreen.getSelectedIndex() > 0) {
-                    c = enc.getCommands().get("WEBCAMDESKTOP");
-                } else {
-                    c = enc.getCommands().get("WEBCAM");
-                }
             } else {
                 s.setWebcam(null);
-                c = enc.getCommands().get("DESKTOP");
             }
+
+            c = enc.getCommands().get(s.getEncoderName());
             s.setCommand(c);
         }
         return s;
@@ -2114,6 +2181,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JSeparator jSeparator5;
     private javax.swing.JLabel lblAudioSource;
     private javax.swing.JLabel lblDelay;
     private javax.swing.JLabel lblDelay1;
@@ -2131,8 +2199,11 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private javax.swing.JLabel lblRecordTargetRecordingFile;
     private javax.swing.JLabel lblRemoteRTMPMessage;
     private javax.swing.JLabel lblRemoteRecordMessage;
+    private javax.swing.JLabel lblRemoteSize;
+    private javax.swing.JLabel lblRemoteSource;
     private javax.swing.JLabel lblScreen;
     private javax.swing.JLabel lblScreen2;
+    private javax.swing.JLabel lblScreen3;
     private javax.swing.JLabel lblScreenDimenssion;
     private javax.swing.JLabel lblServer;
     private javax.swing.JLabel lblStreamName;
@@ -2167,6 +2238,8 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private javax.swing.JPanel panSources;
     private javax.swing.JPanel panStream;
     private javax.swing.JSpinner spinFPS;
+    private javax.swing.JSpinner spinRemoteHeight;
+    private javax.swing.JSpinner spinRemoteWidth;
     private javax.swing.JSpinner spinWebcamCaptureHeight;
     private javax.swing.JSpinner spinWebcamCaptureWidth;
     private javax.swing.JSpinner spinWebcamOffset;
@@ -2176,6 +2249,7 @@ public class ScreenStudio extends javax.swing.JFrame implements Listener, HotKey
     private java.awt.PopupMenu trayMenu;
     private javax.swing.JTextField txtOptionRecordKey;
     private javax.swing.JTextField txtOptionStreamKey;
+    private javax.swing.JTextField txtRemoteSourceURL;
     private javax.swing.JTextField txtStatus;
     private javax.swing.JTextField txtStreamName;
     // End of variables declaration//GEN-END:variables

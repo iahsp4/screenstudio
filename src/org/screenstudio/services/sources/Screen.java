@@ -45,6 +45,8 @@ public class Screen {
     private Command command = null;
     private int screenIndex = -1;
     private int fps = 10;
+    private boolean isRemote = false;
+    
 
     @Override
     public String toString() {
@@ -69,10 +71,19 @@ public class Screen {
                 s.setSize(d.getDefaultConfiguration().getBounds());
                 list.add(s);
             }
+            Screen remote = new Screen();
+            remote.isRemote = true;
+            remote.id = "";
+            remote.setScreenIndex(i++);
+            remote.setSize(new Rectangle(720,480));
+            list.add(remote);
         }
         return list.toArray(new Screen[list.size()]);
     }
 
+    public boolean isRemote(){
+        return isRemote;
+    }
     public static Rectangle captureWindowArea() throws IOException {
         Rectangle r = new Rectangle();
         System.out.println("Capture Window Area");
@@ -247,6 +258,8 @@ public class Screen {
     public String getLabel() {
         if (screenIndex == -1) {
             return "None";
+        } else if (isRemote) {
+            return "Remote Source";
         } else {
             return "Screen " + screenIndex;
         }
@@ -319,5 +332,23 @@ public class Screen {
 
         return list;
     }
-
+    public String getEncoderName(){
+        if (isRemote){
+            if (webcam == null){
+                return "REMOTE";
+            } else {
+                return "WEBCAMREMOTE";
+            }
+        } else {
+            if (webcam == null){
+                return "DESKTOP";
+            } else {
+                if (screenIndex == -1){
+                    return "WEBCAM";
+                } else {
+                    return "WEBCAMDESKTOP";
+                }
+            }
+        }
+    }
 }

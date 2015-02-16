@@ -22,8 +22,6 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.Properties;
 import java.util.TreeMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -76,6 +74,9 @@ public class Encoder {
 
         if (command.contains("@SCREENDEV")) {
             command = command.replaceAll("@SCREENDEV", s.getId());
+        }
+        if (command.contains("@REMOTEURL")){
+            command = command.replaceAll("@REMOTEURL",s.getId());
         }
         if (command.contains("@LOCALSINK")) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
